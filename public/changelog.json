@@ -1,0 +1,118 @@
+[
+  {
+    "date": "2026-05-20",
+    "title": "国内直连优化",
+    "changes": [
+      {"type": "feature", "desc": "新增 cn.zaixianyasuo.cn 国内直连子域名，绕过 Cloudflare CDN 干扰，国内用户可直接访问"},
+      {"type": "improve", "desc": "主站添加中国时区自动检测，国内用户访问 www 时将提示跳转 cn 子域名获得更快体验"}
+    ]
+  },
+  {
+    "date": "2026-05-15",
+    "title": "SEO 优化",
+    "changes": [
+      {"type": "fix", "desc": "为 8 个页面补充缺失的 meta description 标签（admin、donate、feedback、forgot-password、login、profile、register、reset-password）"},
+      {"type": "fix", "desc": "为 8 个页面补充或修正 H1 标签，将 h2/h3 改为语义正确的 h1，修复 Bing 站长工具报错"}
+    ]
+  },
+  {
+    "date": "2026-05-11",
+    "title": "视频压缩 + 图片优化",
+    "changes": [
+      {"type": "feature", "desc": "新增视频压缩功能：支持 MP4/MOV/AVI/WebM/MKV 等格式上传，H.264/H.265/VP9 编码输出"},
+      {"type": "feature", "desc": "视频压缩使用服务端 ffmpeg 处理，后台异步执行，页面自动轮询任务进度"},
+      {"type": "feature", "desc": "大文件上传显示实时进度条，视频上传限制 200MB、时长限制 10 分钟"},
+      {"type": "improve", "desc": "图片压缩效果优化：JPEG 色度采样 4:2:0（减小 15-20%）、自动清除 EXIF 隐私信息"},
+      {"type": "improve", "desc": "PNG 压缩等级提升至 6 并自动量化颜色、WebP 使用 method=6 提升压缩比 5-10%"},
+      {"type": "improve", "desc": "上传图片自动根据 EXIF 方向标签旋转矫正，避免竖拍照片方向错误"},
+      {"type": "improve", "desc": "视频压缩并发限制为 2 个，避免服务器过载；任务表格显示视频/图片类型标记"}
+    ]
+  },
+  {
+    "date": "2026-05-11",
+    "title": "夜间模式",
+    "changes": [
+      {"type": "feature", "desc": "夜间模式背景替换为动态星空效果：200+ 闪烁星星、星云光斑、偶现流星"},
+      {"type": "improve", "desc": "亮星带径向光晕，部分星星带有蓝/紫色彩，深空渐变背景替代纯色填充"},
+      {"type": "improve", "desc": "星空背景覆盖全部页面，仅在深色模式下显示，切换主题实时响应"},
+      {"type": "fix", "desc": "修复删除选中、删除全部、清除记录按钮在本地模式下跳过确认弹窗直接删除的问题"},
+      {"type": "fix", "desc": "修复确认弹窗 HTML 中弯引号导致样式和按钮事件失效的问题"},
+      {"type": "fix", "desc": "修复 Cloudflare CDN 缓存旧版 CSS/JS 导致修复不生效的问题（升级版本号绕过缓存）"}
+    ]
+  },
+  {
+    "date": "2026-05-09",
+    "title": "界面体验",
+    "changes": [
+      {"type": "improve", "desc": "全面升级 UI 交互效果：按钮悬浮上浮、卡片阴影过渡、输入框聚焦光环"},
+      {"type": "improve", "desc": "新增全局过渡动画系统，所有可交互元素拥有流畅的悬停和点击反馈"},
+      {"type": "feature", "desc": "新增 Toast 通知组件，关键操作结果以优雅弹窗形式提示"},
+      {"type": "improve", "desc": "首页标题增加渐变色和入场动画，拖拽区域悬浮时发光放大"},
+      {"type": "improve", "desc": "更新日志页面改为时间线样式，变更记录悬浮高亮"},
+      {"type": "improve", "desc": "个人中心信息改为卡片网格布局，观感更清晰"},
+      {"type": "improve", "desc": "表格新增行悬浮高亮效果，深色模式滚动条美化"},
+      {"type": "improve", "desc": "登录/注册表单 UI 优化，赞助二维码卡片悬浮缩放"},
+      {"type": "fix", "desc": "修复赞助页面二维码说明文字与图片不对应的问题"},
+      {"type": "fix", "desc": "修正登录/注册/个人中心页面的错别字和占位符文案（呢称→昵称、username→用户名等）"}
+    ]
+  },
+  {
+    "date": "2026-05-09",
+    "title": "去水印",
+    "changes": [
+      {"type": "improve", "desc": "重写本地去水印算法，采用边界向内逐层填充替代原有的模糊扩散算法"},
+      {"type": "feature", "desc": "新增填充模式选择：平滑填充（纯色背景）和边缘保留（纹理背景）"},
+      {"type": "improve", "desc": "去水印导出格式自动跟随原图（PNG 保留 PNG，JPG/WebP 输出 JPG）"},
+      {"type": "improve", "desc": "优化控件：搜索半径替换迭代次数，新增处理耗时显示"},
+      {"type": "feature", "desc": "新增半透明水印去除（alpha 估算 + 反推背景），支持豆包 AI 生成的白色半透明文字水印"},
+      {"type": "improve", "desc": "改进半透明算法：改用先 inpaint 生成背景估计再逐像素反推的双通道方案，去除效果更好"}
+    ]
+  },
+  {
+    "date": "2026-05-09",
+    "title": "搜索优化",
+    "changes": [
+      {"type": "feature", "desc": "新增 robots.txt 和 sitemap.xml，引导搜索引擎正确抓取和索引页面"},
+      {"type": "improve", "desc": "首页、去水印、换底色等核心页面新增 meta 描述、关键词和 Open Graph 标签"},
+      {"type": "improve", "desc": "新增 canonical 链接，全站统一使用 www.zaixianyasuo.cn，裸域 301 跳转"},
+      {"type": "feature", "desc": "完成 Google Search Console 和 Bing Webmaster Tools 站点验证与 sitemap 提交"},
+      {"type": "feature", "desc": "完成百度站长平台站点验证（文件验证），备案绑定待人工审核"}
+    ]
+  },
+  {
+    "date": "2026-05-09",
+    "title": "数据库",
+    "changes": [
+      {"type": "fix", "desc": "清理 149 个虚假/测试账号，保留 8 个真实用户，同步清理关联表脏数据"}
+    ]
+  },
+  {
+    "date": "2026-05-09",
+    "title": "鼠标拖尾",
+    "changes": [
+      {"type": "feature", "desc": "新增鼠标拖尾粒子效果，鼠标移动时产生光晕拖尾和浮动粒子"},
+      {"type": "feature", "desc": "日间/夜间双配色方案：日间暖金色拖尾，夜间冷蓝色拖尾，实时跟随主题切换"},
+      {"type": "improve", "desc": "拖尾效果覆盖全部页面（首页、登录、注册、赞助、关于、管理后台等）"},
+      {"type": "fix", "desc": "修复脚本初始化时序问题，确保所有页面均正常显示拖尾效果"}
+    ]
+  },
+  {
+    "date": "2026-05-08",
+    "title": "数据库",
+    "changes": [
+      {"type": "feature", "desc": "从 SQLite 迁移至 MySQL 数据库，提升并发性能和数据可靠性"},
+      {"type": "improve", "desc": "新增 MySQL 连接池配置，优化高并发场景下的数据库连接管理"},
+      {"type": "improve", "desc": "新增数据库迁移脚本，支持一键完成数据迁移"},
+      {"type": "fix", "desc": "修复 JSON 字段在 MySQL 下的兼容性问题"}
+    ]
+  },
+  {
+    "date": "2026-05-08",
+    "title": "界面体验",
+    "changes": [
+      {"type": "fix", "desc": "全面修复深色主题显示问题，覆盖所有页面的夜间模式样式"},
+      {"type": "improve", "desc": "重写核心样式表深色主题规则，采用变量与显式选择器双方案确保兼容性"},
+      {"type": "fix", "desc": "修复部分页面因缓存导致深色主题样式不生效的问题"}
+    ]
+  }
+]

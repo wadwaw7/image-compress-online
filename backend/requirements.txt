@@ -1,0 +1,16 @@
+fastapi==0.104.1
+uvicorn[standard]==0.22.0
+gunicorn==23.0.0
+sqlalchemy==1.4.52
+pydantic==2.5.0
+passlib==1.7.4
+python-jose[cryptography]==3.3.0
+python-multipart==0.0.9
+pillow==10.4.0
+aiofiles==23.2.1
+python-dotenv==1.0.1
+filelock==3.16.0
+emails==0.6
+slowapi==0.1.9
+opencv-python-headless==4.9.0.80
+numpy==1.26.4

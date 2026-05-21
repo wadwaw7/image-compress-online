@@ -1,0 +1,740 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+<script src="./theme-flash.js?v=20260515"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="index,follow" />
+  <title>证件照换底色工具 - 免费在线更换证件照背景，支持一寸二寸蓝红白多种底色</title>
+  <meta name="description" content="免费在线证件照换底色工具，AI智能抠图一键更换蓝底、红底、白底，支持一寸和二寸规格。本地浏览器处理无需上传照片，保护个人隐私安全。快速获取符合护照、签证、考试报名等要求的证件照，完全免费。" />
+  <meta name="keywords" content="证件照换底色,证件照背景更换,照片换背景,蓝底证件照,红底证件照,白底证件照,AI抠图,在线换底色,一寸证件照,二寸证件照" />
+  <meta property="og:title" content="证件照换底色工具 - 免费在线更换证件照背景，支持一寸二寸蓝红白多种底色" />
+  <meta property="og:description" content="免费在线证件照换底色工具，AI智能抠图一键更换蓝底红底白底，支持一寸二寸规格，本地处理保护隐私。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.zaixianyasuo.cn/bg-change.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://www.zaixianyasuo.cn/bg-change.html" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"证件照换底色","description":"免费在线更换证件照背景颜色，AI智能抠图，支持多种底色和尺寸规格","step":[{"@type":"HowToStep","name":"上传证件照","text":"点击或拖拽上传您的证件照片，支持PNG/JPG/WebP格式"},{"@type":"HowToStep","name":"自动抠图","text":"AI自动识别并移除原背景，您可调整容差和羽化参数优化边缘效果"},{"@type":"HowToStep","name":"选择底色","text":"从蓝底、红底、白底中选择目标背景色，或使用取色器自定义颜色"},{"@type":"HowToStep","name":"下载照片","text":"预览满意后下载更换底色后的证件照，整个过程在浏览器本地完成"}]}</script>
+  <link rel="stylesheet" href="./shared.css?v=20260511d" />
+  <style>
+    .grid{display:grid;grid-template-columns:360px 1fr;gap:20px}
+    @media (max-width: 1024px){.grid{grid-template-columns:1fr;gap:12px}}
+
+    .card h1,.card h3{margin:4px 0 12px;font-size:15px}
+
+    .preview-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+    @media (max-width: 720px){.preview-wrap{grid-template-columns:1fr}}
+
+    .imgbox{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+    .imgbox .head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border)}
+    .imgbox .body{padding:12px}
+    .canvas-wrap{max-width:520px;margin:0 auto}
+    #cv-src,#cv-out{width:100%;height:auto;display:block;border-radius:10px;background:#f8fafc}
+
+    #file-input{position:absolute;left:-9999px;top:-9999px}
+    .status{min-height:18px;color:var(--muted);margin-top:8px}
+
+    .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    @media (max-width: 768px){
+      .btn-row button{flex:1 1 calc(50% - 8px);min-width:0}
+      .btn-row button:nth-child(3){flex-basis:100%}
+    }
+
+    .color-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;cursor:pointer;user-select:none}
+    .pill input{margin:0}
+    .sw{width:14px;height:14px;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
+    /* 夜间模式 */
+    html[data-theme='dark'] .imgbox{background:#141d2b;border-color:#283348}
+    html[data-theme='dark'] .imgbox .head{border-bottom-color:#283348}
+    html[data-theme='dark'] #cv-src,html[data-theme='dark'] #cv-out{background:#1a2332}
+    html[data-theme='dark'] .pill{background:#1a2332;border-color:#283348}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="brand"><div class="logo"></div><b>ImageCompress</b></div>
+      <div class="nav-links">
+        <a href="./index.html" id="nav-home">返回首页</a>
+        <a href="javascript:;" id="nav-about">关于</a>
+        <a href="javascript:;" id="nav-privacy">隐私</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h1>证件照换底色（本地处理，不上传服务器）</h1>
+        <div class="muted">支持 PNG/JPG/WebP。若图片背景是纯色或透明效果最好；复杂背景不保证准确抠图。</div>
+
+        <div style="margin-top:12px" class="btn-row">
+          <button id="btn-browse" class="btn">选择图片</button>
+          <button id="btn-download" class="btn light" disabled>下载结果</button>
+          <button id="btn-reset" class="btn gray" disabled>清空</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>证件照尺寸</label>
+          <select id="size">
+            <option value="orig" selected>保持原图尺寸（仅换底色）</option>
+            <option value="1inch">一寸（295×413 px）</option>
+            <option value="2inch">二寸（413×579 px）</option>
+          </select>
+          <div class="muted" style="font-size:12px">提示：选择一寸/二寸后，会按比例裁剪再缩放到目标像素；可用“上下位置微调”让头部留白更符合证件照。</div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>上下位置微调（用于调整头顶留白）</label>
+          <input id="vshift" type="range" min="-30" max="30" value="0" />
+          <div class="muted" style="font-size:12px">当前：<span id="vshiftv">0</span>%（正值向下移动画面/人物更靠上；负值向上移动画面/人物更靠下）</div>
+        </div>
+        <input id="file-input" type="file" accept="image/png,image/jpeg,image/webp" />
+
+        <div style="margin-top:12px">
+          <label>背景颜色</label>
+          <div class="muted" style="font-size:12px;margin-top:4px">提示：若要使用预设红/蓝/绿，请把“自定义颜色”留空（不要填 #ffffff）。</div>
+          <div class="color-row">
+            <label class="pill"><input type="radio" name="bg" value="#ffffff" checked><span class="sw" style="background:#ffffff"></span>白底</label>
+            <label class="pill"><input type="radio" name="bg" value="#ff0000"><span class="sw" style="background:#ff0000"></span>红底</label>
+            <label class="pill"><input type="radio" name="bg" value="#1d4ed8"><span class="sw" style="background:#1d4ed8"></span>蓝底</label>
+            <label class="pill"><input type="radio" name="bg" value="#00a65a"><span class="sw" style="background:#00a65a"></span>绿底</label>
+            <div style="flex:1;min-width:220px">
+              <label style="margin:0">自定义颜色</label>
+              <input id="bg-custom" type="text" value="" placeholder="#RRGGBB 或 rgb(255,0,0)" />
+              <div class="muted" style="font-size:12px;margin-top:4px">提示：优先使用上面预设；自定义将覆盖预设。</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>容差（识别背景的宽松程度）</label>
+          <input id="tol" type="range" min="0" max="160" value="45" />
+          <div class="muted" style="font-size:12px">当前：<span id="tolv">45</span>（数值越大越容易把接近背景色的区域当作背景）</div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>边缘羽化（降低锯齿/白边）</label>
+          <input id="feather" type="range" min="0" max="10" value="3" />
+          <div class="muted" style="font-size:12px">当前：<span id="featherv">3</span>（0 关闭；数值越大边缘越柔和）</div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>边缘内缩（去除残留背景色）</label>
+          <input id="shrink" type="range" min="0" max="4" value="1" />
+          <div class="muted" style="font-size:12px">当前：<span id="shrinkv">1</span> px（建议 1~2；越大越能去残红，但可能吃掉头发细节）</div>
+        </div>
+
+
+        <div style="margin-top:10px">
+          <label>导出格式</label>
+          <select id="export-fmt">
+            <option value="image/jpeg" selected>JPEG（推荐，体积小）</option>
+            <option value="image/webp">WebP（更小，兼容较新浏览器）</option>
+            <option value="image/png">PNG（体积大，但无损）</option>
+          </select>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>导出质量（JPEG/WebP）</label>
+          <input id="export-q" type="range" min="60" max="95" value="90" />
+          <div class="muted" style="font-size:12px">当前：<span id="export-qv">90</span>（建议 85~92）</div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>背景采样位置</label>
+          <select id="sample">
+            <option value="corners" selected>四角取样（推荐）</option>
+            <option value="top-left">左上角</option>
+            <option value="top-right">右上角</option>
+            <option value="bottom-left">左下角</option>
+            <option value="bottom-right">右下角</option>
+            <option value="manual">手动取色（点击原图背景）</option>
+          </select>
+          <div class="muted" style="font-size:12px">选择“手动取色”后，请在左侧“原图”上点击背景区域。</div>
+        </div>
+
+        <div id="msg" class="status"></div>
+      </section>
+
+      <section class="card">
+        <h3>预览</h3>
+        <div class="preview-wrap">
+          <div class="imgbox">
+            <div class="head"><b>原图</b><span class="muted" id="src-info"></span></div>
+            <div class="body"><canvas id="cv-src"></canvas></div>
+          </div>
+          <div class="imgbox">
+            <div class="head"><b>结果</b><span class="muted" id="out-info"></span></div>
+            <div class="body"><canvas id="cv-out"></canvas></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="muted" style="margin-top:14px;font-size:12px;line-height:1.8">
+      说明：此功能为“快速证件照换底色”的轻量版算法（基于角落采样 + 阈值替换），不做复杂人像抠图。
+      若你后续想要更稳的效果，可以再加“手动选择背景色吸管 / 简单边缘羽化 / 人像分割模型”等增强。
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      function navTo(p){ location.href = (location.protocol==='file:'? ('./'+p) : ('/'+p)); }
+      var navAbout = document.getElementById('nav-about');
+      var navPrivacy = document.getElementById('nav-privacy');
+      if (navAbout) navAbout.addEventListener('click', function(){ navTo('about.html'); });
+      if (navPrivacy) navPrivacy.addEventListener('click', function(){ navTo('privacy.html'); });
+    })();
+
+    const els = {
+      input: document.getElementById('file-input'),
+      btnBrowse: document.getElementById('btn-browse'),
+      btnDownload: document.getElementById('btn-download'),
+      btnReset: document.getElementById('btn-reset'),
+      msg: document.getElementById('msg'),
+      cvSrc: document.getElementById('cv-src'),
+      cvOut: document.getElementById('cv-out'),
+      tol: document.getElementById('tol'),
+      tolv: document.getElementById('tolv'),
+      feather: document.getElementById('feather'),
+      featherv: document.getElementById('featherv'),
+      sample: document.getElementById('sample'),
+      srcInfo: document.getElementById('src-info'),
+      outInfo: document.getElementById('out-info'),
+      bgCustom: document.getElementById('bg-custom'),
+      size: document.getElementById('size'),
+      vshift: document.getElementById('vshift'),
+      vshiftv: document.getElementById('vshiftv'),
+      exportFmt: document.getElementById('export-fmt'),
+      exportQ: document.getElementById('export-q'),
+      exportQv: document.getElementById('export-qv'),
+      shrink: document.getElementById('shrink'),
+      shrinkv: document.getElementById('shrinkv'),
+    };
+
+    const state = {
+      file: null,
+      srcBitmap: null,
+      outBlob: null,
+      outFilename: '',
+      // 背景取样（手动吸管时由点击写入）
+      manualBgRGB: null,
+      // 最近一次处理的调试数据
+      lastStats: null,
+    };
+
+    function setMsg(t, err){
+      els.msg.textContent = t || '';
+      els.msg.style.color = err ? '#f87171' : '';
+    }
+
+    function parseColor(str){
+      const s = (str || '').trim();
+      if (!s) return null;
+
+      // #RGB/#RRGGBB
+      let m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(s);
+      if (m){
+        const hex = m[1];
+        if (hex.length === 3){
+          const r = parseInt(hex[0]+hex[0],16);
+          const g = parseInt(hex[1]+hex[1],16);
+          const b = parseInt(hex[2]+hex[2],16);
+          return [r,g,b];
+        }
+        return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+      }
+
+      // rgb(r,g,b)
+      m = /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i.exec(s);
+      if (m){
+        const r = Math.max(0, Math.min(255, Number(m[1])));
+        const g = Math.max(0, Math.min(255, Number(m[2])));
+        const b = Math.max(0, Math.min(255, Number(m[3])));
+        return [r,g,b];
+      }
+
+      return null;
+    }
+
+    function getSelectedBgRGB(){
+      // 检查自定义颜色输入框是否有合法值
+      const customInput = (els.bgCustom.value || '').trim();
+      if (customInput && customInput.toLowerCase() !== '#ffffff') {
+        const c = parseColor(customInput);
+        if (c) return c;
+      }
+      // 否则，使用预设的单选按钮
+      const r = document.querySelector('input[name="bg"]:checked');
+      const v = r ? r.value : '#ffffff';
+      return parseColor(v) || [255,255,255];
+    }
+
+    function drawBitmapToCanvas(bitmap, canvas){
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(bitmap, 0, 0);
+    }
+
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+    function sampleBgColor(imageData, mode, manual){
+      if (mode === 'manual' && manual && Array.isArray(manual)) return manual;
+
+      const { data, width, height } = imageData;
+      const size = 16; // 稍大一些，抵抗噪点
+
+      function rectStats(x0, y0, w, h){
+        const x1 = clamp(x0 + w, 0, width);
+        const y1 = clamp(y0 + h, 0, height);
+        let r=0,g=0,b=0,c=0;
+        let r2=0,g2=0,b2=0;
+        for(let y=y0; y<y1; y++){
+          for(let x=x0; x<x1; x++){
+            const i = (y*width + x) * 4;
+            const a = data[i+3];
+            if(a === 0) continue;
+            const rr=data[i], gg=data[i+1], bb=data[i+2];
+            r += rr; g += gg; b += bb;
+            r2 += rr*rr; g2 += gg*gg; b2 += bb*bb;
+            c++;
+          }
+        }
+        if(!c) return null;
+        const mr=r/c, mg=g/c, mb=b/c;
+        // 方差（越小越“纯色背景”）
+        const vr = r2/c - mr*mr;
+        const vg = g2/c - mg*mg;
+        const vb = b2/c - mb*mb;
+        const v = (vr+vg+vb)/3;
+        return { mean:[Math.round(mr),Math.round(mg),Math.round(mb)], var:v, count:c };
+      }
+
+      const rects = [];
+      if (mode === 'top-left') rects.push([0,0,size,size]);
+      else if (mode === 'top-right') rects.push([width-size,0,size,size]);
+      else if (mode === 'bottom-left') rects.push([0,height-size,size,size]);
+      else if (mode === 'bottom-right') rects.push([width-size,height-size,size,size]);
+      else {
+        rects.push([0,0,size,size]);
+        rects.push([width-size,0,size,size]);
+        rects.push([0,height-size,size,size]);
+        rects.push([width-size,height-size,size,size]);
+      }
+
+      const stats = rects.map(rc => rectStats(rc[0], rc[1], rc[2], rc[3])).filter(Boolean);
+      if(!stats.length) return [255,255,255];
+
+      // 过滤掉“颜色不纯”的角落（比如角落有衣服/头发/阴影）
+      // 经验阈值：v < 800 较可靠；权重与方差反比
+      const good = stats.filter(s => s.var < 1200);
+      const use = good.length >= 2 ? good : stats; // 至少2个角落可靠才用过滤，否则退化为全用
+
+      let sr=0, sg=0, sb=0, sw=0;
+      use.forEach(s=>{
+        const w = 1 / (1 + s.var); // var 越小权重越大
+        sr += s.mean[0]*w;
+        sg += s.mean[1]*w;
+        sb += s.mean[2]*w;
+        sw += w;
+      });
+      if(!sw) return use[0].mean;
+      return [Math.round(sr/sw), Math.round(sg/sw), Math.round(sb/sw)];
+    }
+
+    function distRGB(a,b){
+      const dr=a[0]-b[0], dg=a[1]-b[1], db=a[2]-b[2];
+      return Math.sqrt(dr*dr+dg*dg+db*db);
+    }
+
+    function getSizeSpec(){
+      const v = els.size ? els.size.value : 'orig';
+      if(v === '1inch') return { key: '1inch', w: 295, h: 413 };
+      if(v === '2inch') return { key: '2inch', w: 413, h: 579 };
+      return { key: 'orig', w: 0, h: 0 };
+    }
+
+    function computeCropRect(sw, sh, tw, th, vshiftPct){
+      // 按目标比例裁剪（默认居中），vshiftPct 用于上下微调
+      const targetRatio = tw / th;
+      const srcRatio = sw / sh;
+      let cw, ch;
+      if(srcRatio > targetRatio){
+        // 源图更宽：裁左右
+        ch = sh;
+        cw = Math.round(sh * targetRatio);
+      }else{
+        // 源图更窄：裁上下
+        cw = sw;
+        ch = Math.round(sw / targetRatio);
+      }
+
+      const sx = Math.max(0, Math.floor((sw - cw) / 2));
+
+      // 上下位置微调：
+      // vshiftPct > 0 => 人物看起来更靠上（裁剪窗口向下移动）
+      // vshiftPct < 0 => 人物看起来更靠下（裁剪窗口向上移动）
+      const baseSy = (sh - ch) / 2;
+      const maxShift = (sh - ch) / 2;
+      const shift = (clamp(Number(vshiftPct || 0), -30, 30) / 30) * maxShift;
+      const sy = clamp(Math.floor(baseSy + shift), 0, sh - ch);
+
+      return { sx, sy, sw: cw, sh: ch };
+    }
+
+    async function process(){
+      if(!state.srcBitmap){
+        setMsg('请先选择一张图片', true);
+        return;
+      }
+
+      const tol = Number(els.tol.value || 0);
+      const feather = Number(els.feather?.value || 0);
+      const shrink = Number(els.shrink?.value || 0);
+      els.tolv.textContent = String(tol);
+      if (els.featherv) els.featherv.textContent = String(feather);
+      if (els.shrinkv) els.shrinkv.textContent = String(shrink);
+
+      const outRGB = getSelectedBgRGB();
+
+      // 读原图像素（在隐藏/原尺寸画布中处理，保证取样/吸管一致）
+      const cv = els.cvSrc;
+      const ctx = cv.getContext('2d', { willReadFrequently: true });
+      cv.width = state.srcBitmap.width;
+      cv.height = state.srcBitmap.height;
+      ctx.drawImage(state.srcBitmap, 0, 0);
+      const imgData = ctx.getImageData(0,0,cv.width,cv.height);
+
+      const bgRGB = sampleBgColor(imgData, els.sample.value, state.manualBgRGB);
+
+      // 自动取色太“不像背景”时，提示用户切到手动吸管
+      if(els.sample.value !== 'manual'){
+        const ddToWhite = distRGB(bgRGB, [255,255,255]);
+        const ddToBlack = distRGB(bgRGB, [0,0,0]);
+        // 纯白/纯黑通常意味着取样失败或取到了空白区域
+        if(ddToWhite < 8 || ddToBlack < 8){
+          setMsg('自动取色可能失败（bgRGB 接近纯白/纯黑）。建议切换“手动取色”并点击背景区域。');
+        }
+      }
+
+      const sizeSpec = getSizeSpec();
+      const needResize = sizeSpec.key !== 'orig';
+      const vshiftPct = Number(els.vshift?.value || 0);
+      if (els.vshiftv) els.vshiftv.textContent = String(vshiftPct);
+      const crop = needResize ? computeCropRect(cv.width, cv.height, sizeSpec.w, sizeSpec.h, vshiftPct) : null;
+
+      // 输出画布（目标尺寸）
+      const cv2 = els.cvOut;
+      const ctx2 = cv2.getContext('2d', { willReadFrequently: true });
+      cv2.width = needResize ? sizeSpec.w : cv.width;
+      cv2.height = needResize ? sizeSpec.h : cv.height;
+
+      // 先铺底色
+      ctx2.fillStyle = `rgb(${outRGB[0]},${outRGB[1]},${outRGB[2]})`;
+      ctx2.fillRect(0,0,cv2.width,cv2.height);
+
+      // 1) 先在“裁剪区域”生成 alpha mask（原分辨率），便于做边缘内缩
+      const d = imgData.data;
+      const sx0 = crop ? crop.sx : 0;
+      const sy0 = crop ? crop.sy : 0;
+      const sww = crop ? crop.sw : cv.width;
+      const shh = crop ? crop.sh : cv.height;
+
+      const soft = Math.max(0, feather) * 12;
+      const hi = tol + soft;
+
+      const maskW = sww;
+      const maskH = shh;
+      const mask = new Uint8Array(maskW * maskH);
+
+      let bgCount = 0;
+      const totalPx = d.length / 4;
+
+      for(let y=0; y<maskH; y++){
+        const sy = sy0 + y;
+        for(let x=0; x<maskW; x++){
+          const sx = sx0 + x;
+          const si = (sy * cv.width + sx) * 4;
+          const a = d[si+3];
+          if(a === 0){
+            bgCount++;
+            mask[y*maskW + x] = 0;
+            continue;
+          }
+          const r=d[si], g=d[si+1], b=d[si+2];
+          const dd = distRGB([r,g,b], bgRGB);
+          if(dd <= tol){
+            bgCount++;
+            mask[y*maskW + x] = 0;
+            continue;
+          }
+          let alpha = 1;
+          if(soft > 0 && dd < hi){
+            let t = (dd - tol) / soft;
+            t = clamp(t, 0, 1);
+            alpha = t*t*(3 - 2*t);
+          }
+          mask[y*maskW + x] = Math.round(alpha * 255);
+        }
+      }
+
+      // 2) 边缘内缩：对 mask 做简单腐蚀（erode），去掉发丝边缘残留底色
+      const shrinkPx = clamp(Math.round(shrink || 0), 0, 6);
+      if(shrinkPx > 0){
+        let cur = mask;
+        let tmp = new Uint8Array(maskW * maskH);
+        for(let it=0; it<shrinkPx; it++){
+          for(let y=0; y<maskH; y++){
+            for(let x=0; x<maskW; x++){
+              const idx = y*maskW + x;
+              let m = cur[idx];
+              if(m === 0){ tmp[idx] = 0; continue; }
+              // 3x3 最小值腐蚀
+              let minv = 255;
+              for(let yy=y-1; yy<=y+1; yy++){
+                if(yy<0 || yy>=maskH) continue;
+                for(let xx=x-1; xx<=x+1; xx++){
+                  if(xx<0 || xx>=maskW) continue;
+                  const v = cur[yy*maskW + xx];
+                  if(v < minv) minv = v;
+                  if(minv === 0) break;
+                }
+                if(minv === 0) break;
+              }
+              tmp[idx] = minv;
+            }
+          }
+          cur = tmp;
+          tmp = new Uint8Array(maskW * maskH);
+        }
+        // 将最后一次结果写回 mask
+        mask.set(cur);
+      }
+
+      // 3) 组合：在原分辨率生成“已换底色”的裁剪结果，再用高质量 drawImage 缩放到目标尺寸
+      const srcC = document.createElement('canvas');
+      srcC.width = maskW;
+      srcC.height = maskH;
+      const sctx = srcC.getContext('2d', { willReadFrequently: true });
+      const sImg = sctx.createImageData(maskW, maskH);
+      const sd = sImg.data;
+
+      for(let y=0; y<maskH; y++){
+        const sy = sy0 + y;
+        for(let x=0; x<maskW; x++){
+          const sx = sx0 + x;
+          const si = (sy * cv.width + sx) * 4;
+          const di = (y * maskW + x) * 4;
+          const r=d[si], g=d[si+1], b=d[si+2], a=d[si+3];
+
+          const ma = mask[y*maskW + x] / 255;
+          if(a === 0 || ma <= 0){
+            sd[di] = outRGB[0];
+            sd[di+1] = outRGB[1];
+            sd[di+2] = outRGB[2];
+            sd[di+3] = 255;
+            continue;
+          }
+
+          sd[di]   = Math.round(r*ma + outRGB[0]*(1-ma));
+          sd[di+1] = Math.round(g*ma + outRGB[1]*(1-ma));
+          sd[di+2] = Math.round(b*ma + outRGB[2]*(1-ma));
+          sd[di+3] = 255;
+        }
+      }
+
+      sctx.putImageData(sImg, 0, 0);
+
+      ctx2.imageSmoothingEnabled = true;
+      try{ ctx2.imageSmoothingQuality = 'high'; }catch(_){ }
+      if(needResize){
+        ctx2.drawImage(srcC, 0, 0, maskW, maskH, 0, 0, cv2.width, cv2.height);
+      }else{
+        // 原尺寸：直接画回
+        ctx2.drawImage(srcC, 0, 0);
+      }
+
+      // 调试信息：背景识别比例 + bgRGB
+      const bgRatio = totalPx ? (bgCount/totalPx) : 0;
+      state.lastStats = { bgRGB, outRGB, tol, feather, bgRatio, sizeSpec, crop };
+
+      // 导出：支持 JPEG/WebP/PNG
+      const mime = els.exportFmt?.value || 'image/jpeg';
+      const q = Number(els.exportQ?.value || 90);
+      const quality = clamp(q / 100, 0.6, 0.95);
+      const ext = (mime === 'image/jpeg') ? 'jpg' : (mime === 'image/webp' ? 'webp' : 'png');
+
+      const blob = await new Promise(resolve => {
+        if (mime === 'image/png') return cv2.toBlob(resolve, mime);
+        return cv2.toBlob(resolve, mime, quality);
+      });
+      if(!blob){
+        setMsg('生成结果失败（toBlob 返回空）', true);
+        return;
+      }
+
+      state.outBlob = blob;
+      const base = (state.file?.name || 'photo').replace(/\.[^\.]+$/,'');
+      state.outFilename = base + `_bg.${ext}`;
+
+      els.btnDownload.disabled = false;
+      els.btnReset.disabled = false;
+
+      els.srcInfo.textContent = `${cv.width}×${cv.height}`;
+      const outSizeText = needResize ? `${sizeSpec.w}×${sizeSpec.h}` : `${cv.width}×${cv.height}`;
+      els.outInfo.textContent = `${outSizeText} / ${ext.toUpperCase()} / ${(blob.size/1024).toFixed(1)} KB / bgRGB(${bgRGB.join(',')}) / 背景≈${(bgRatio*100).toFixed(1)}%`;
+
+      const hint = (els.sample.value === 'manual' && !state.manualBgRGB)
+        ? '已生成结果（当前为手动取色模式：请在原图背景上点一下，会更准）'
+        : '已生成结果：可继续切换底色或调整容差/羽化，然后下载。';
+      setMsg(hint);
+    }
+
+    async function loadFile(file){
+      state.file = file;
+      state.outBlob = null;
+      state.outFilename = '';
+      els.btnDownload.disabled = true;
+      els.btnReset.disabled = false;
+      els.srcInfo.textContent = '';
+      els.outInfo.textContent = '';
+
+      setMsg('正在读取图片...');
+      try{
+        const bmp = await createImageBitmap(file);
+        state.srcBitmap = bmp;
+        drawBitmapToCanvas(bmp, els.cvSrc);
+        // 初次处理
+        await process();
+      }catch(e){
+        console.error(e);
+        setMsg('读取图片失败：' + (e.message||e), true);
+      }
+    }
+
+    function resetAll(){
+      state.file = null;
+      state.srcBitmap = null;
+      state.outBlob = null;
+      state.outFilename = '';
+      state.manualBgRGB = null;
+      state.lastStats = null;
+      els.btnDownload.disabled = true;
+      els.btnReset.disabled = true;
+      els.srcInfo.textContent = '';
+      els.outInfo.textContent = '';
+      if(els.vshift){ els.vshift.value = '0'; }
+      if(els.vshiftv){ els.vshiftv.textContent = '0'; }
+      const c1 = els.cvSrc.getContext('2d');
+      const c2 = els.cvOut.getContext('2d');
+      els.cvSrc.width = els.cvSrc.height = 1;
+      els.cvOut.width = els.cvOut.height = 1;
+      c1.clearRect(0,0,1,1);
+      c2.clearRect(0,0,1,1);
+      setMsg('');
+      try{ els.input.value=''; }catch(_){ }
+    }
+
+    // events
+    els.btnBrowse.addEventListener('click', ()=>els.input.click());
+    els.input.addEventListener('change', ()=>{
+      const f = els.input.files && els.input.files[0];
+      if(f) loadFile(f);
+    });
+
+    // 颜色变化：任意变更都重新处理
+    document.querySelectorAll('input[name="bg"]').forEach(r=>r.addEventListener('change', process));
+    els.bgCustom.addEventListener('input', ()=>{
+      // 输入时不强制太频繁：简单 debounce
+      if (els.bgCustom.__t) clearTimeout(els.bgCustom.__t);
+      els.bgCustom.__t = setTimeout(process, 250);
+    });
+
+    els.tol.addEventListener('input', ()=>{ els.tolv.textContent = els.tol.value; });
+    els.tol.addEventListener('change', process);
+
+    if(els.feather){
+      els.feather.addEventListener('input', ()=>{ if(els.featherv) els.featherv.textContent = els.feather.value; });
+      els.feather.addEventListener('change', process);
+    }
+
+    if(els.shrink){
+      els.shrink.addEventListener('input', ()=>{ if(els.shrinkv) els.shrinkv.textContent = els.shrink.value; });
+      els.shrink.addEventListener('change', process);
+    }
+
+    if(els.exportQ){
+      els.exportQ.addEventListener('input', ()=>{ if(els.exportQv) els.exportQv.textContent = els.exportQ.value; });
+      els.exportQ.addEventListener('change', process);
+    }
+
+    if(els.exportFmt){
+      els.exportFmt.addEventListener('change', process);
+    }
+
+
+    els.sample.addEventListener('change', ()=>{
+      // 切换取样方式时，清除手动吸管记录
+      state.manualBgRGB = null;
+      process();
+    });
+
+    if(els.size){
+      els.size.addEventListener('change', process);
+    }
+
+    if(els.vshift){
+      els.vshift.addEventListener('input', ()=>{ if(els.vshiftv) els.vshiftv.textContent = els.vshift.value; });
+      els.vshift.addEventListener('change', process);
+    }
+
+    // 手动吸管：点击原图 canvas
+    els.cvSrc.addEventListener('click', (e)=>{
+      if(els.sample.value !== 'manual') return;
+      const rect = els.cvSrc.getBoundingClientRect();
+      const scaleX = els.cvSrc.width / rect.width;
+      const scaleY = els.cvSrc.height / rect.height;
+      const x = Math.floor((e.clientX - rect.left) * scaleX);
+      const y = Math.floor((e.clientY - rect.top) * scaleY);
+      const ctx = els.cvSrc.getContext('2d', { willReadFrequently: true });
+      const pixel = ctx.getImageData(x,y,1,1).data;
+      state.manualBgRGB = [pixel[0], pixel[1], pixel[2]];
+      process();
+    });
+
+    els.btnDownload.addEventListener('click', ()=>{
+      if(!state.outBlob){ setMsg('暂无可下载结果', true); return; }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(state.outBlob);
+      a.download = state.outFilename || 'bg.png';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    });
+
+    els.btnReset.addEventListener('click', resetAll);
+
+    // init
+    resetAll();
+  </script>
+<script src="./menu.js?v=20260203"></script>
+<script src="./theme.js?v=20260203"></script>
+<script src="./stars.js?v=20260511b" defer></script>
+    <div class="footer" style="margin:28px 0 8px;text-align:center;color:#9aa3b2;font-size:12px">
+      <nav style="margin-bottom:10px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px">
+        <a href="./" style="color:#9aa3b2;text-decoration:none">首页</a>
+        <a href="./bg-change.html" style="color:#9aa3b2;text-decoration:none">证件照换底色</a>
+        <a href="./watermark-remover.html" style="color:#9aa3b2;text-decoration:none">去水印</a>
+        <a href="./changelog.html" style="color:#9aa3b2;text-decoration:none">更新日志</a>
+        <a href="./feedback.html" style="color:#9aa3b2;text-decoration:none">反馈</a>
+        <a href="./donate.html" style="color:#9aa3b2;text-decoration:none">赞助</a>
+        <a href="./about.html" style="color:#9aa3b2;text-decoration:none">关于</a>
+        <a href="./privacy.html" style="color:#9aa3b2;text-decoration:none">隐私政策</a>
+      </nav>
+      © 2025 ImageCompress. 版权所有。 <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">赣ICP备2025079690号-1</a>
+    </div>
+</body>
+</html>
+

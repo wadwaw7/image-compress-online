@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads / temp
+uploads/
+temp/
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Sensitive
+*secret*
+*credential*
+*private*
