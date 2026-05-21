@@ -59,6 +59,13 @@
 
 ## 快速开始
 
+### 前置要求
+
+- Python 3.9+
+- pip
+- (可选) ffmpeg — 用于视频压缩功能，[下载 ffmpeg](https://ffmpeg.org/download.html)
+- (可选) MySQL — 生产环境推荐，默认使用 SQLite 无需额外配置
+
 ### 本地开发
 
 ```bash
@@ -66,24 +73,64 @@
 git clone https://github.com/wadwaw7/image-compress-online.git
 cd image-compress-online
 
-# 后端
+# 创建虚拟环境
 cd backend
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# 激活虚拟环境
+# Linux/macOS:
+source .venv/bin/activate
+# Windows:
+.venv\Scripts\activate
+
+# 安装依赖
 pip install -r requirements.txt
 
-# 配置环境变量
+# 配置环境变量（可选，默认使用 SQLite 无需配置）
 cp .env.example .env
-# 编辑 .env 填入数据库连接等配置
-
-# 初始化数据库
-python -m app.utils.db_migrate
 
 # 启动开发服务器
 uvicorn app.main:app --reload --port 8001
 ```
 
-前端为纯静态文件，直接浏览器打开 `public/index.html` 即可预览（部分功能需后端支持）。
+访问 http://localhost:8001 即可使用完整功能。
+
+> **说明**：默认使用 SQLite 数据库（文件存储在 `backend/storage/db.sqlite3`），无需安装 MySQL。首次启动会自动创建表和默认管理员。视频压缩需要系统安装 ffmpeg。
+
+### 生产部署
+
+生产环境建议使用 MySQL + Nginx 反向代理：
+
+```bash
+# 安装生产依赖
+pip install gunicorn pymysql
+
+# 启动 (Linux)
+gunicorn app.main:app -w 2 -k uvicorn.workers.UvicornWorker -b 127.0.0.1:8001
+```
+
+Nginx 配置参考：
+
+```nginx
+server {
+    listen 80;
+    server_name example.com;
+
+    root /path/to/public;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
 
 ## 项目结构
 

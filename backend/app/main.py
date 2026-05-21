@@ -140,8 +140,13 @@ app.include_router(images_router.router, prefix="/api/v1")
 app.include_router(records_router.router, prefix="/api/v1")
 
 
-# Static frontend
-FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
+# Static frontend — look for "public" first (GitHub repo structure), then "frontend" (legacy)
+_frontend_candidates = [
+    Path(__file__).resolve().parents[2] / "public",
+    Path(__file__).resolve().parents[2] / "frontend",
+]
+FRONTEND_DIR = next((d for d in _frontend_candidates if d.exists()), _frontend_candidates[0])
+
 if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
@@ -161,3 +166,19 @@ def root_index():
     if index_file.exists():
         return FileResponse(index_file)
     return JSONResponse({"message": "Image Compressor API running. Frontend not found."})
+
+
+# Dev convenience: serve frontend static files at root so absolute paths like /app.js work
+from fastapi.responses import Response
+import mimetypes
+
+@app.get("/{filename:path}")
+async def serve_frontend_static(filename: str):
+    """Serve static frontend files at root path for development (no nginx needed)."""
+    file_path = FRONTEND_DIR / filename
+    if not file_path.exists() or not file_path.is_file():
+        # Let 404 handling work normally for API routes
+        return JSONResponse(status_code=404, content={"detail": "Not found"})
+    media_type, _ = mimetypes.guess_type(str(file_path))
+    content = file_path.read_bytes()
+    return Response(content=content, media_type=media_type or "application/octet-stream")

@@ -1,7 +1,8 @@
 fastapi==0.104.1
 uvicorn[standard]==0.22.0
-gunicorn==23.0.0
+# gunicorn==23.0.0  # optional: production server (Linux only)
 sqlalchemy==1.4.52
+pymysql==1.1.1
 pydantic==2.5.0
 passlib==1.7.4
 python-jose[cryptography]==3.3.0
