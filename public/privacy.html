@@ -36,16 +36,13 @@
     <div class="nav">
       <div class="brand"><div class="logo"></div><b>ImageCompress</b></div>
       <div class="nav-links">
-        <a href="javascript:;" id="nav-about">关于</a>
-        <a href="javascript:;" id="nav-privacy">隐私</a>
-        <span id="nav-user-wrap" style="position:relative;display:inline-block">
-        <a href="javascript:;" id="nav-login">登录</a>
-          <div id="nav-user-menu">
-            <a id="nav-view-profile" href="javascript:;" style="display:block;padding:4px 0">查看用户信息</a><a id="nav-admin" href="javascript:;" style="display:none;padding:4px 0">管理后台</a>
-            <a id="nav-logout-menu" href="javascript:;" style="display:block;color:#ef4444;padding:4px 0">注销登录</a>
-          </div>
-        </span>
-        <a href="javascript:;" id="nav-home">返回首页</a>
+        <a href="./">首页</a>
+        <a href="./about.html">关于</a>
+        <a href="./privacy.html" style="font-weight:600">隐私</a>
+        <a href="./feedback.html">反馈</a>
+        <a href="./bg-change.html">换底色</a>
+        <a href="./watermark-remover.html">去水印</a>
+        <a href="./donate.html">赞助</a>
       </div>
     </div>
 
@@ -54,33 +51,20 @@
       <p class="muted">最近更新：2025-12-06</p>
       <h2>1. 我们收集什么</h2>
       <ul>
-        <li>基础账户信息：用户名、邮箱（如你选择登录）。</li>
-        <li>使用数据：上传图片的文件名、大小、类型、MD5（用于去重），压缩参数与结果大小。</li>
-        <li>日志数据：下载记录（任务ID、时间、IP）。</li>
+        <li>我们不收集任何个人信息。所有图片处理均在浏览器本地完成，无需上传至服务器。</li>
+        <li>本工具不使用任何追踪脚本或分析工具。</li>
       </ul>
-      <h2>2. 我们如何使用</h2>
+      <h2>2. 数据存储</h2>
       <ul>
-        <li>提供核心服务：批量上传、压缩、下载、历史记录。</li>
-        <li>安全与风控：去重、简单限速、防止滥用。</li>
-        <li>体验优化：统计压缩效果，改进质量与速度。</li>
+        <li>所有图片和压缩结果仅在您的浏览器中处理，不会传输到任何服务器。</li>
+        <li>网站使用浏览器本地存储（localStorage）保存您的主题偏好等设置。</li>
       </ul>
-      <h2>3. 数据存储与保留</h2>
-      <ul>
-        <li>本地存储：图片保存在服务器本地存储目录（/storage）。</li>
-        <li>自动清理：压缩产物可定期清理（如若配置开启）。</li>
-        <li>删除请求：你可通过联系我们删除与账户相关的历史记录。</li>
-      </ul>
-      <h2>4. 你的权利</h2>
-      <ul>
-        <li>访问与导出：你可以在“历史记录”中查看你的上传与压缩任务。</li>
-        <li>删除与更正：你可联系我们删除账户或更正资料。</li>
-      </ul>
-      <h2>5. Cookie 与第三方</h2>
+      <h2>3. Cookie 与第三方</h2>
       <ul>
         <li>我们不使用第三方追踪脚本，不投放广告。</li>
-        <li>仅在登录状态下使用本地存储保存你的访问令牌。</li>
+        <li>不使用任何 Cookie 进行用户追踪。</li>
       </ul>
-      <h2>6. 联系我们</h2>
+      <h2>4. 联系我们</h2>
       <p>如对本政策有疑问，请发送邮件至：<a class="email-protect" data-user="2149649106" data-domain="qq.com"></a></p>
     </section>
 
@@ -109,7 +93,6 @@
       if(about) about.addEventListener('click',()=>navTo('about.html'));
       if(privacy) privacy.addEventListener('click',()=>navTo('privacy.html'));
       if(home) home.addEventListener('click',()=>navTo('index.html'));
-      // 注意：不绑定 nav-login 的点击，交由 app.js 根据登录状态处理
     })();
   </script>
 <script src="./menu.js?v=20260203"></script>

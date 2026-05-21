@@ -135,35 +135,13 @@
 
         <div style="margin-top:10px">
           <label>处理模式</label>
-          <select id="processor-mode">
-            <option value="local" selected>本地处理（不上传服务器）</option>
-            <option value="server">服务器高级去水印（需登录）</option>
-          </select>
-          <div class="hint" style="margin-top:4px">服务器模式会临时上传图片，并使用更强的算法对选区进行修复，适合角落文字水印等场景。</div>
+          <p class="muted" style="font-size:12px;margin-top:4px">纯浏览器本地处理，图片不会上传到任何服务器。</p>
         </div>
 
         <div style="margin-top:10px">
-          <label>修复强度（迭代次数，仅本地模式）</label>
+          <label>修复强度（迭代次数）</label>
           <input id="strength" type="range" min="10" max="80" value="35" />
           <div class="muted" style="font-size:12px">当前：<span id="strengthv">35</span>（越大越干净，但更慢；推荐 25~45）</div>
-        </div>
-
-        <div style="margin-top:10px">
-          <label>服务器算法</label>
-          <div class="row" style="align-items:end">
-            <div style="flex:1;min-width:220px">
-              <label style="margin:0">方法</label>
-              <select id="server-method">
-                <option value="telea" selected>Telea（推荐）</option>
-                <option value="ns">Navier-Stokes</option>
-              </select>
-            </div>
-            <div style="flex:1;min-width:220px">
-              <label style="margin:0">半径（1-15）</label>
-              <input id="server-radius" type="text" value="5" />
-              <div class="hint" style="margin-top:4px">数值越大修复更强，但可能更模糊；建议 3-7。</div>
-            </div>
-          </div>
         </div>
 
         <div style="margin-top:10px" class="row">
@@ -200,22 +178,6 @@
   </div>
 
   <script>
-    // 初始化 API_BASE，便于服务器模式调用后端接口
-    (function initApiBase(){
-      function isFile(){ return location.protocol === 'file:'; }
-      function getQS(k){ try{ return new URLSearchParams(location.search).get(k); }catch(e){ return null; } }
-      const forced = getQS('api');
-      let base = '';
-      if (!isFile()) {
-        base = (forced && forced !== 'self') ? forced : '';
-      } else {
-        let cached = null;
-        try{ cached = localStorage.getItem('api_base'); }catch(e){}
-        base = forced || cached || 'http://127.0.0.1:8001';
-      }
-      window.API_BASE = base;
-    })();
-
     (function(){
       function navTo(p){ location.href = (location.protocol==='file:'? ('./'+p) : ('/'+p)); }
       var navAbout = document.getElementById('nav-about');
@@ -241,9 +203,6 @@
       presetWrap: document.getElementById('preset-wrap'),
       presetPos: document.getElementById('preset-pos'),
       presetSize: document.getElementById('preset-size'),
-      processorMode: document.getElementById('processor-mode'),
-      serverMethod: document.getElementById('server-method'),
-      serverRadius: document.getElementById('server-radius'),
       strength: document.getElementById('strength'),
       strengthv: document.getElementById('strengthv'),
     };
@@ -397,10 +356,6 @@
     async function process(){
       if(!state.srcBitmap){ setMsg('请先选择一张图片', true); return; }
       if(!state.sel){ setMsg('请先框选水印区域', true); return; }
-      const mode = els.processorMode?.value || 'local';
-      if (mode === 'server') {
-        return await processServer();
-      }
 
       const iter = Number(els.strength.value || 35);
       els.strengthv.textContent = String(iter);
@@ -502,115 +457,6 @@
       c2.clearRect(0,0,1,1);
       setMsg('');
       try{ els.input.value=''; }catch(_){ }
-    }
-
-    let __wmProcessing = false;
-    async function processServer(){
-      // 服务器高级去水印逻辑
-      if(__wmProcessing){ setMsg('已有一次服务器去水印在处理中，请稍候...', false); return; }
-      if(!state.srcBitmap){ setMsg('请先选择一张图片', true); return; }
-      if(!state.sel){ setMsg('请先框选水印区域', true); return; }
-      // 允许 API_BASE 为空字符串（表示同源），仅在完全未定义/为 null 时提示
-      if (typeof window.API_BASE === 'undefined' || window.API_BASE === null) {
-        setMsg('服务器地址未准备好', true);
-        return;
-      }
-      const token = (localStorage.getItem('token') || '').trim();
-      if(!token){ setMsg('服务器模式需要先登录账号', true); return; }
-
-      const btnOldText = els.btnApply ? (els.btnApply.textContent || '') : '';
-      try{
-        __wmProcessing = true;
-        if (els.btnApply) { els.btnApply.disabled = true; els.btnApply.textContent = '处理中...'; }
-        // 1. 上传当前图片到服务器，获取 image_id
-        const fd = new FormData();
-        fd.append('files', state.file);
-        setMsg('正在上传图片到服务器...', false);
-        const up = await fetch(API_BASE + '/api/v1/images/upload', {
-          method:'POST',
-          headers:{ 'Authorization': 'Bearer '+token },
-          body: fd,
-        });
-        if(!up.ok){
-          let d=''; try{ const j=await up.json(); d=j.detail||JSON.stringify(j); }catch{ try{ d=await up.text(); }catch{} }
-          throw new Error(d || (up.status+':'+up.statusText));
-        }
-        const upItems = await up.json();
-        const first = Array.isArray(upItems) && upItems[0];
-        if(!first || !first.image_id){ throw new Error('服务器未返回图片ID'); }
-        const imageId = first.image_id;
-
-        // 2. 将选区从 canvas 像素坐标映射到原图像素坐标
-        const bmp = state.srcBitmap;
-        const cv = els.cvSrc;
-        // 使用 canvas 的实际像素尺寸做换算，保证在缩放/高分屏下坐标仍然准确
-        const sx = bmp.width / cv.width;
-        const sy = bmp.height / cv.height;
-        let x = Math.round(state.sel.x * sx);
-        let y = Math.round(state.sel.y * sy);
-        let w = Math.round(state.sel.w * sx);
-        let h = Math.round(state.sel.h * sy);
-        // 选区边界裁剪，避免越界
-        x = Math.max(0, Math.min(x, bmp.width - 1));
-        y = Math.max(0, Math.min(y, bmp.height - 1));
-        w = Math.max(1, Math.min(w, bmp.width - x));
-        h = Math.max(1, Math.min(h, bmp.height - y));
-        // 对极大选区给出提示（但仍然允许提交）
-        const area = w * h;
-        const total = bmp.width * bmp.height;
-        if (area > total * 0.5) {
-          setMsg('提示：当前选区覆盖超过整张图片的一半，可能导致明显涂抹感，建议适当缩小选区。', false);
-        }
-
-        const radius = parseInt((els.serverRadius?.value || '5'), 10) || 5;
-        const method = (els.serverMethod?.value || 'telea');
-
-        setMsg('服务器正在处理中，请稍候...', false);
-
-        const qs = new URLSearchParams({
-          image_id: String(imageId),
-          x: String(x),
-          y: String(y),
-          w: String(w),
-          h: String(h),
-          radius: String(radius),
-          method: method,
-        });
-
-        const wmRes = await fetch(API_BASE + '/api/v1/images/remove-watermark?' + qs.toString(), {
-          method:'POST',
-          headers:{ 'Authorization':'Bearer '+token },
-        });
-        if(!wmRes.ok){
-          let d=''; try{ const j=await wmRes.json(); d=j.detail||JSON.stringify(j); }catch{ try{ d=await wmRes.text(); }catch{} }
-          throw new Error(d || (wmRes.status+':'+wmRes.statusText));
-        }
-        const blob = await wmRes.blob();
-
-        // 3. 在右侧画出结果 & 支持下载
-        const outImg = await createImageBitmap(blob);
-        const cv2 = els.cvOut;
-        const ctx2 = cv2.getContext('2d', { willReadFrequently:true });
-        cv2.width = outImg.width;
-        cv2.height = outImg.height;
-        ctx2.clearRect(0,0,cv2.width,cv2.height);
-        ctx2.drawImage(outImg, 0, 0);
-
-        state.outBlob = blob;
-        const base = (state.file?.name || 'photo').replace(/\.[^\.]+$/,'');
-        state.outFilename = base + '_nowm_server.jpg';
-        els.btnDownload.disabled = false;
-        els.btnClear.disabled = false;
-        els.srcInfo.textContent = `${bmp.width}×${bmp.height}`;
-        els.outInfo.textContent = `${cv2.width}×${cv2.height} / 服务器处理`;
-        setMsg('服务器高级去水印完成，可下载结果。', false);
-      }catch(e){
-        console.error(e);
-        setMsg('服务器去水印失败：'+(e.message||e), true);
-      }finally{
-        __wmProcessing = false;
-        if (els.btnApply) { els.btnApply.disabled = false; els.btnApply.textContent = btnOldText || '开始修复'; }
-      }
     }
 
     // events

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="index,follow" />
   <title>关于我们 - 在线图片压缩工具，免费安全高效的图片批量处理服务平台</title>
-  <meta name="description" content="了解在线图片压缩工具的功能特色与技术优势，致力于提供免费、安全、高效的在线图片批量压缩、视频压缩、证件照换底色和AI去水印服务。采用本地浏览器处理技术保护用户数据隐私，无需上传文件即可完成图片处理。" />
+  <meta name="description" content="了解在线图片压缩工具的功能特色与技术优势，致力于提供免费、安全、高效的在线图片批量压缩、证件照换底色和AI去水印服务。采用本地浏览器处理技术保护用户数据隐私，无需上传文件即可完成图片处理。" />
   <meta property="og:title" content="关于我们 - 在线图片压缩工具，免费安全高效的图片批量处理服务平台" />
   <meta property="og:description" content="了解在线图片压缩工具的功能特色与技术优势，采用本地浏览器处理保护隐私，提供免费安全的图片与视频处理服务。" />
   <meta property="og:type" content="website" />
@@ -37,16 +37,13 @@
     <div class="nav">
       <div class="brand"><div class="logo"></div><b>ImageCompress</b></div>
       <div class="nav-links">
-        <a href="javascript:;" id="nav-about">关于</a>
-        <a href="javascript:;" id="nav-privacy">隐私</a>
-        <span id="nav-user-wrap" style="position:relative;display:inline-block">
-        <a href="javascript:;" id="nav-login">登录</a>
-          <div id="nav-user-menu">
-            <a id="nav-view-profile" href="javascript:;" style="display:block;padding:4px 0">查看用户信息</a><a id="nav-admin" href="javascript:;" style="display:none;padding:4px 0">管理后台</a>
-            <a id="nav-logout-menu" href="javascript:;" style="display:block;color:#ef4444;padding:4px 0">注销登录</a>
-          </div>
-        </span>
-        <a href="javascript:;" id="nav-home">返回首页</a>
+        <a href="./">首页</a>
+        <a href="./about.html" style="font-weight:600">关于</a>
+        <a href="./privacy.html">隐私</a>
+        <a href="./feedback.html">反馈</a>
+        <a href="./bg-change.html">换底色</a>
+        <a href="./watermark-remover.html">去水印</a>
+        <a href="./donate.html">赞助</a>
       </div>
     </div>
 
@@ -59,12 +56,12 @@
         <li><b>智能压缩</b>：支持批量处理，可在保持画质的基础上大幅度降低图片体积。</li>
         <li><b>多格式支持</b>：完美兼容 JPEG、PNG 及 WebP 等主流图像格式的互转与优化。</li>
         <li><b>高效处理</b>：基于异步任务队列设计，确保在大批量处理任务下的稳定性。</li>
-        <li><b>高级修复</b>：集成基于 OpenCV 的图像修复算法，提供服务器端高级去水印能力。</li>
+        <li><b>智能修复</b>：提供图片去水印和瑕疵修复能力，纯浏览器端处理，无需上传。</li>
         <li><b>隐私保障</b>：本地模式确保图片不经过服务器处理，充分保护您的数据隐私。</li>
       </ul>
 
       <h2>技术底座</h2>
-      <p>我们采用现代化的后端架构（FastAPI）结合高性能图像处理库（Pillow/OpenCV），为用户提供毫秒级的响应体验。前端采用原生轻量化设计，确保在各类终端设备上均能流畅运行。</p>
+      <p>采用纯前端技术实现，基于 Canvas API 和现代浏览器能力，所有图片处理均在本地完成。不依赖任何后端服务，无需安装软件，打开浏览器即可使用。</p>
 
       <h2>反馈与支持</h2>
       <p>如果您在使用过程中有任何疑问、建议或商务合作意向，欢迎通过以下方式与我们联系：</p>
@@ -96,7 +93,6 @@
       if(about) about.addEventListener('click',()=>navTo('about.html'));
       if(privacy) privacy.addEventListener('click',()=>navTo('privacy.html'));
       if(home) home.addEventListener('click',()=>navTo('index.html'));
-      // 注意：不绑定 nav-login 的点击，交由 app.js 根据登录状态处理
     })();
   </script>
 <script src="./menu.js?v=20260203"></script>
