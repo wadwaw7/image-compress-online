@@ -1,6 +1,18 @@
 [
   {
     "date": "2026-06-03",
+    "title": "桌面与移动应用下载",
+    "changes": [
+      {"type": "feature", "desc": "新增下载页面（download.html），提供 Windows 桌面版和 Android 手机版安装包下载"},
+      {"type": "feature", "desc": "全站导航栏和页脚新增"下载App"入口，8 个页面统一添加下载链接直达下载页面"},
+      {"type": "improve", "desc": "下载页面支持动态获取最新版本号，提供分平台安装教程和常见问题解答"},
+      {"type": "feature", "desc": "新增 Tauri v2 配置用于 Windows 桌面打包（NSIS 安装器，支持自定义安装路径）"},
+      {"type": "feature", "desc": "新增 Capacitor 配置用于 Android APK 打包"},
+      {"type": "improve", "desc": "反馈页面（feedback.html）补全顶部导航栏，与其他页面保持一致"}
+    ]
+  },
+  {
+    "date": "2026-06-03",
     "title": "去水印页面夜间模式适配",
     "changes": [
       {"type": "fix", "desc": "去水印页面夜间模式适配：输入框、图片预览区、选区按钮、选区遮罩层、按钮危险色、页脚链接等元素全面适配深色主题"},

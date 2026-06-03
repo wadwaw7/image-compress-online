@@ -32,28 +32,38 @@
 
       <nav class="sidebar-nav" role="tablist" aria-label="Main navigation">
         <button class="sidebar-tab active" data-tab="compress" role="tab" aria-selected="true">
-          <span class="tab-icon">🗜️</span> COMPRESS
+          <span class="tab-icon">🗜️</span> <span data-i18n="nav.compress">压缩</span>
         </button>
         <button class="sidebar-tab" data-tab="watermark" role="tab" aria-selected="false">
-          <span class="tab-icon">💧</span> DE-WATERMARK
+          <span class="tab-icon">💧</span> <span data-i18n="nav.watermark">去水印</span>
         </button>
         <button class="sidebar-tab" data-tab="background" role="tab" aria-selected="false">
-          <span class="tab-icon">🎨</span> BG CHANGE
+          <span class="tab-icon">🎨</span> <span data-i18n="nav.background">换背景</span>
         </button>
         <button class="sidebar-tab" data-tab="about" role="tab" aria-selected="false">
-          <span class="tab-icon">⊡</span> ABOUT
+          <span class="tab-icon">⊡</span> <span data-i18n="nav.about">关于</span>
         </button>
       </nav>
 
-      <div style="padding:12px 14px;border-top:1px solid var(--border-subtle)">
-        <button class="btn primary" id="sidebar-login-btn" style="width:100%;font-size:10px;padding:8px">⚡ LOGIN / REGISTER</button>
+      <div style="padding:8px 14px;border-top:1px solid var(--border-subtle)">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="font-size:10px;color:var(--text-dim)">🌐</span>
+          <select id="lang-switcher" style="width:100%;font-size:10px;padding:4px 6px;background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border-subtle);border-radius:4px;cursor:pointer">
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div style="text-align:center;margin-bottom:6px">
+          <span style="display:inline-block;padding:2px 8px;border-radius:999px;font-size:9px;background:rgba(0,255,100,0.12);color:#00ff88;letter-spacing:0.5px">🟢 离线可用</span>
+        </div>
+        <button class="btn ghost" id="sidebar-login-btn" style="width:100%;font-size:9px;padding:6px;opacity:0.7">⚡ 登录 (可选)</button>
         <div id="sidebar-user-info" class="hidden" style="text-align:center">
           <div class="text-mono font-sm text-cyan" id="sidebar-user-name"></div>
-          <button class="btn ghost font-sm mt-8" id="sidebar-logout-btn" style="font-size:9px;width:100%">LOGOUT</button>
+          <button class="btn ghost font-sm mt-8" id="sidebar-logout-btn" style="font-size:9px;width:100%">退出登录</button>
         </div>
       </div>
       <div class="sidebar-footer">
-        v1.0.0 · OFFLINE READY
+        v1.0.1 · 离线处理 · 不上传
       </div>
     </aside>
 
@@ -64,32 +74,32 @@
       <section class="page active" data-tab="compress" aria-label="Image Compress">
         <div class="card mb-12">
           <div class="card-header">
-            <h2>▸ IMAGE COMPRESSION</h2>
-            <span class="badge cyan">LOCAL MODE</span>
+            <h2 data-i18n="compress.title">▸ 图片压缩</h2>
+            <span class="badge cyan" data-i18n="compress.settings">本地模式</span>
           </div>
 
           <!-- Drop Zone -->
           <div class="dropzone border-pulse" id="compress-dropzone">
             <span class="dz-icon">📁</span>
-            <div class="dz-title">DROP IMAGES HERE</div>
-            <div class="dz-hint">or click to browse · PNG / JPG / WebP · batch supported</div>
+            <div class="dz-title" data-i18n="compress.drag_text">拖拽图片到此处</div>
+            <div class="dz-hint">点击选择 · PNG / JPG / WebP · 支持批量</div>
           </div>
           <input type="file" id="compress-input" class="sr-only" accept="image/png,image/jpeg,image/webp" multiple />
 
           <!-- File Queue -->
           <div id="compress-queue-wrap" class="hidden mt-16">
             <div class="flex-between mb-8">
-              <span class="text-mono font-sm text-cyan" id="queue-count">0 files</span>
-              <button class="btn ghost font-sm" id="btn-clear-queue">CLEAR ALL</button>
+              <span class="text-mono font-sm text-cyan" id="queue-count">0 个文件</span>
+              <button class="btn ghost font-sm" id="btn-clear-queue">清空</button>
             </div>
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>FILE</th>
-                    <th>ORIGINAL</th>
-                    <th>RESULT</th>
-                    <th>SAVED</th>
+                    <th>文件</th>
+                    <th>原始大小</th>
+                    <th>压缩后</th>
+                    <th>节省</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -101,7 +111,7 @@
           <!-- Progress -->
           <div id="compress-progress-wrap" class="hidden mt-16">
             <div class="flex-between mb-8">
-              <span class="text-mono font-sm text-magenta" id="progress-text">Processing...</span>
+              <span class="text-mono font-sm text-magenta" id="progress-text">处理中...</span>
               <span class="text-mono font-sm text-dim" id="progress-file"></span>
             </div>
             <div class="progress-wrap">
@@ -113,7 +123,7 @@
         <!-- Settings -->
         <div class="card">
           <div class="card-header">
-            <h3>▸ SETTINGS</h3>
+            <h3>▸ <span data-i18n="compress.settings">压缩设置</span></h3>
           </div>
           <div class="flex-row" style="gap:16px">
             <div style="flex:1;min-width:140px">
@@ -125,21 +135,21 @@
               </select>
             </div>
             <div style="flex:1;min-width:140px">
-              <label>QUALITY: <span id="quality-val" class="text-cyan">80</span>%</label>
+              <label>质量: <span id="quality-val" class="text-cyan">80</span>%</label>
               <input type="range" id="compress-quality" min="1" max="100" value="80" />
             </div>
           </div>
           <div class="flex-row mt-12" style="gap:16px">
             <div style="flex:1;min-width:120px">
-              <label>MAX WIDTH (px, 0=off)</label>
+              <label>最大宽度 (px, 0=关)</label>
               <input type="number" id="compress-maxw" value="0" min="0" max="10000" />
             </div>
             <div style="flex:1;min-width:120px">
-              <label>MAX HEIGHT (px, 0=off)</label>
+              <label>最大高度 (px, 0=关)</label>
               <input type="number" id="compress-maxh" value="0" min="0" max="10000" />
             </div>
             <div style="flex:1;min-width:120px">
-              <label>CONCURRENCY</label>
+              <label>并发数</label>
               <select id="compress-concurrency">
                 <option value="1">1</option>
                 <option value="2" selected>2</option>
@@ -149,8 +159,8 @@
             </div>
           </div>
           <div class="flex-row mt-16">
-            <button class="btn primary neon-pulse" id="btn-compress-start" disabled>⚡ START COMPRESSION</button>
-            <button class="btn success" id="btn-download-all" disabled>⬇ DOWNLOAD ALL</button>
+            <button class="btn primary neon-pulse" id="btn-compress-start" disabled>⚡ 开始压缩</button>
+            <button class="btn success" id="btn-download-all" disabled>⬇ 下载全部</button>
           </div>
         </div>
       </section>
@@ -159,39 +169,39 @@
       <section class="page" data-tab="watermark" aria-label="Remove Watermark">
         <div class="card mb-12">
           <div class="card-header">
-            <h2>▸ WATERMARK REMOVAL</h2>
-            <span class="badge magenta">LOCAL INPAINT</span>
+            <h2>▸ 去水印</h2>
+            <span class="badge magenta">本地修复</span>
           </div>
 
           <div class="flex-row mb-12" style="gap:10px">
-            <button class="btn primary" id="wm-btn-browse">📂 SELECT IMAGE</button>
-            <button class="btn secondary" id="wm-btn-apply" disabled>🔧 INPAINT</button>
-            <button class="btn success" id="wm-btn-download" disabled>⬇ DOWNLOAD</button>
-            <button class="btn ghost" id="wm-btn-clear" disabled>CLEAR</button>
-            <button class="btn danger" id="wm-btn-clearsel" disabled>CLEAR SEL</button>
+            <button class="btn primary" id="wm-btn-browse">📂 选择图片</button>
+            <button class="btn secondary" id="wm-btn-apply" disabled>🔧 开始修复</button>
+            <button class="btn success" id="wm-btn-download" disabled>⬇ 下载</button>
+            <button class="btn ghost" id="wm-btn-clear" disabled>清空</button>
+            <button class="btn danger" id="wm-btn-clearsel" disabled>清除选区</button>
           </div>
           <input type="file" id="wm-file-input" class="sr-only" accept="image/png,image/jpeg,image/webp" />
 
           <div class="flex-row mt-12" style="gap:16px">
             <div style="flex:1;min-width:200px">
-              <label>ITERATIONS: <span id="wm-iter-val" class="text-magenta">35</span></label>
+              <label>迭代次数: <span id="wm-iter-val" class="text-magenta">35</span></label>
               <input type="range" id="wm-iterations" min="10" max="80" value="35" />
             </div>
           </div>
 
           <div class="text-muted font-sm mt-8" id="wm-msg">
-            <span class="text-cyan">▸</span> Select an image, then drag on the original to mark the watermark area.
+            <span class="text-cyan">▸</span> 选择图片后，在原图上拖拽框选水印区域
           </div>
         </div>
 
         <div class="split-view">
           <div class="canvas-preview" id="wm-src-wrap">
-            <div class="canvas-label">ORIGINAL</div>
+            <div class="canvas-label">原图</div>
             <canvas id="wm-cv-src"></canvas>
             <div id="wm-overlay" style="position:absolute;inset:0;pointer-events:none"></div>
           </div>
           <div class="canvas-preview" id="wm-out-wrap">
-            <div class="canvas-label">RESULT</div>
+            <div class="canvas-label">结果</div>
             <canvas id="wm-cv-out"></canvas>
           </div>
         </div>
@@ -201,21 +211,21 @@
       <section class="page" data-tab="background" aria-label="Background Change">
         <div class="card mb-12">
           <div class="card-header">
-            <h2>▸ BACKGROUND CHANGE</h2>
-            <span class="badge green">LOCAL PROCESSING</span>
+            <h2>▸ 证件照换底色</h2>
+            <span class="badge green">本地处理</span>
           </div>
 
           <div class="flex-row mb-12" style="gap:10px">
-            <button class="btn primary" id="bg-btn-browse">📂 SELECT IMAGE</button>
-            <button class="btn secondary" id="bg-btn-process" disabled>🎨 CHANGE BG</button>
-            <button class="btn success" id="bg-btn-download" disabled>⬇ DOWNLOAD</button>
-            <button class="btn ghost" id="bg-btn-clear">CLEAR</button>
+            <button class="btn primary" id="bg-btn-browse">📂 选择图片</button>
+            <button class="btn secondary" id="bg-btn-process" disabled>🎨 换底色</button>
+            <button class="btn success" id="bg-btn-download" disabled>⬇ 下载</button>
+            <button class="btn ghost" id="bg-btn-clear">清空</button>
           </div>
           <input type="file" id="bg-file-input" class="sr-only" accept="image/png,image/jpeg,image/webp" />
 
           <!-- Background Color -->
           <div class="mt-16">
-            <label>BACKGROUND COLOR</label>
+            <label>背景颜色</label>
             <div class="color-pills mb-8" id="bg-color-pills">
               <div class="color-pill active" data-color="#ffffff" style="background:#fff" title="White"></div>
               <div class="color-pill" data-color="#ff0000" style="background:#ff0000" title="Red"></div>
@@ -224,22 +234,22 @@
             </div>
             <div class="flex-row" style="gap:10px">
               <input type="text" id="bg-custom-color" value="#ffffff" placeholder="#RRGGBB or rgb(r,g,b)" style="flex:1" />
-              <button class="btn ghost" id="bg-btn-pick" title="Pick color from image">💉 EYEDROPPER</button>
+              <button class="btn ghost" id="bg-btn-pick" title="从图片取色">💉 取色</button>
             </div>
           </div>
 
           <!-- Sliders -->
           <div class="flex-row mt-16" style="gap:16px">
             <div style="flex:1;min-width:140px">
-              <label>TOLERANCE: <span id="bg-tol-val" class="text-cyan">10</span></label>
+              <label>容差: <span id="bg-tol-val" class="text-cyan">10</span></label>
               <input type="range" id="bg-tolerance" min="0" max="100" value="10" />
             </div>
             <div style="flex:1;min-width:140px">
-              <label>FEATHER: <span id="bg-feather-val" class="text-cyan">2</span></label>
+              <label>羽化: <span id="bg-feather-val" class="text-cyan">2</span></label>
               <input type="range" id="bg-feather" min="0" max="20" value="2" />
             </div>
             <div style="flex:1;min-width:140px">
-              <label>SHRINK: <span id="bg-shrink-val" class="text-cyan">0</span></label>
+              <label>收缩: <span id="bg-shrink-val" class="text-cyan">0</span></label>
               <input type="range" id="bg-shrink" min="0" max="6" value="0" />
             </div>
           </div>
@@ -275,11 +285,11 @@
 
         <div class="split-view">
           <div class="canvas-preview" id="bg-src-wrap">
-            <div class="canvas-label">ORIGINAL</div>
+            <div class="canvas-label">原图</div>
             <canvas id="bg-cv-src"></canvas>
           </div>
           <div class="canvas-preview" id="bg-out-wrap">
-            <div class="canvas-label">RESULT</div>
+            <div class="canvas-label">结果</div>
             <canvas id="bg-cv-out"></canvas>
           </div>
         </div>
@@ -289,34 +299,33 @@
       <section class="page" data-tab="about" aria-label="About">
         <div class="card">
           <div class="card-header">
-            <h2>▸ ABOUT</h2>
+            <h2 data-i18n="about.title">▸ 关于</h2>
             <span class="badge cyan">v1.0.0</span>
           </div>
 
           <div style="font-family:var(--font-mono);font-size:13px;line-height:2;color:var(--text-secondary)">
             <p><span class="text-cyan">ImageCompress Cyberpunk Edition</span></p>
-            <p>Version: <span class="text-magenta" id="about-version">v1.0.0</span></p>
-            <p class="mt-12">A standalone offline image processing tool with cyberpunk aesthetics.</p>
-            <button class="btn secondary mt-12" id="about-check-update">🔄 CHECK FOR UPDATES</button>
+            <p>Version: <span class="text-magenta" id="about-version" data-i18n="about.version">v1.0.0</span></p>
+            <p class="mt-12" data-i18n="about.description">独立的离线图片处理工具，赛博朋克风格界面设计。</p>
+            <button class="btn secondary mt-12" id="about-check-update" data-i18n="about.check_update_btn">🔄 检查更新</button>
             <p class="text-dim font-sm mt-8" id="about-update-status"></p>
 
-            <p class="mt-16" style="color:var(--neon-cyan)">▸ FEATURES</p>
+            <p class="mt-16" style="color:var(--neon-cyan)" data-i18n="about.features">▸ 功能特性</p>
             <ul style="list-style:none;padding:0;margin:8px 0">
-              <li><span class="text-magenta">⬡</span> Image Compression — Batch compress with format/quality/resize control</li>
-              <li><span class="text-magenta">⬡</span> Watermark Removal — AI diffusion-based inpainting, fully local</li>
-              <li><span class="text-magenta">⬡</span> Background Change — ID photo background swap with edge feathering</li>
-              <li><span class="text-magenta">⬡</span> 100% Local Processing — No upload, no server, no login required</li>
-              <li><span class="text-magenta">⬡</span> Offline Ready — Works without internet after first load</li>
+              <li data-i18n="about.feature1"><span class="text-magenta">⬡</span> 智能压缩 — 支持格式互转，批量并发处理</li>
+              <li data-i18n="about.feature2"><span class="text-magenta">⬡</span> AI 去水印 — 局部扩散修复算法，全本地运行</li>
+              <li data-i18n="about.feature3"><span class="text-magenta">⬡</span> 证件照换底色 — 边缘羽化，标准尺寸输出</li>
+              <li data-i18n="about.feature4"><span class="text-magenta">⬡</span> 离线可用 — 首次加载后可离线使用全部功能</li>
             </ul>
 
-            <p class="mt-16" style="color:var(--neon-cyan)">▸ PRIVACY</p>
-            <p>All image processing happens locally in your browser using Canvas API. Your files never leave your device.</p>
+            <p class="mt-16" style="color:var(--neon-cyan)" data-i18n="about.privacy">▸ 隐私说明</p>
+            <p data-i18n="about.privacy_text">所有图片处理在浏览器本地完成，您的文件永远不会离开设备。</p>
 
-            <p class="mt-16" style="color:var(--neon-cyan)">▸ ONLINE VERSION</p>
-            <p>For video compression and advanced features, visit <a href="https://www.zaixianyasuo.cn" target="_blank" rel="noopener">zaixianyasuo.cn</a></p>
+            <p class="mt-16" style="color:var(--neon-cyan)">▸ 在线版本</p>
+            <p>视频压缩及更多高级功能，请访问 <a href="https://www.zaixianyasuo.cn" target="_blank" rel="noopener">zaixianyasuo.cn</a></p>
 
-            <p class="mt-16" style="color:var(--neon-cyan)">▸ KEYBOARD SHORTCUTS</p>
-            <p><span class="badge cyan">Ctrl+1</span> Compress &nbsp; <span class="badge magenta">Ctrl+2</span> De-Watermark &nbsp; <span class="badge green">Ctrl+3</span> BG Change &nbsp; <span class="badge cyan">Ctrl+4</span> About</p>
+            <p class="mt-16" style="color:var(--neon-cyan)" data-i18n="about.shortcuts">▸ 快捷键</p>
+            <p><span class="badge cyan">Ctrl+1</span> <span data-i18n="nav.compress">压缩</span> &nbsp; <span class="badge magenta">Ctrl+2</span> <span data-i18n="nav.watermark">去水印</span> &nbsp; <span class="badge green">Ctrl+3</span> <span data-i18n="nav.background">换背景</span> &nbsp; <span class="badge cyan">Ctrl+4</span> <span data-i18n="nav.about">关于</span></p>
 
             <p class="mt-20 text-center text-muted" style="font-size:10px;letter-spacing:1px">
               © 2026 ImageCompress. Built with ⚡ cyberpunk energy.
@@ -331,16 +340,16 @@
   <!-- Bottom Tab Bar (Mobile) -->
   <nav id="bottom-tabs" role="tablist" aria-label="Mobile navigation">
     <button class="bottom-tab active" data-tab="compress">
-      <span class="bt-icon">🗜️</span> COMPRESS
+      <span class="bt-icon">🗜️</span> <span data-i18n="nav.compress">压缩</span>
     </button>
     <button class="bottom-tab" data-tab="watermark">
-      <span class="bt-icon">💧</span> WATERMARK
+      <span class="bt-icon">💧</span> <span data-i18n="nav.watermark">去水印</span>
     </button>
     <button class="bottom-tab" data-tab="background">
-      <span class="bt-icon">🎨</span> BG CHANGE
+      <span class="bt-icon">🎨</span> <span data-i18n="nav.background">换背景</span>
     </button>
     <button class="bottom-tab" data-tab="about">
-      <span class="bt-icon">⊡</span> ABOUT
+      <span class="bt-icon">⊡</span> <span data-i18n="nav.about">关于</span>
     </button>
   </nav>
 
@@ -359,32 +368,32 @@
       </div>
       <div id="login-error" class="hidden mb-12" style="padding:8px 12px;border:1px solid var(--neon-red);border-radius:var(--radius-sm);color:var(--neon-red);font-size:12px;background:rgba(255,34,68,0.08)"></div>
       <div id="login-form">
-        <label>USERNAME OR EMAIL</label>
-        <input type="text" id="login-username" placeholder="Enter username or email" autocomplete="username" />
-        <label class="mt-12">PASSWORD</label>
-        <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password" />
+        <label data-i18n="auth.username_placeholder">用户名 / 邮箱</label>
+        <input type="text" id="login-username" data-i18n-placeholder="auth.username_placeholder" placeholder="请输入用户名或邮箱" autocomplete="username" />
+        <label class="mt-12" data-i18n="auth.password_placeholder">密码</label>
+        <input type="password" id="login-password" data-i18n-placeholder="auth.password_placeholder" placeholder="请输入密码" autocomplete="current-password" />
         <div class="flex-between mt-12">
           <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:0">
-            <input type="checkbox" id="login-remember" /> REMEMBER ME
+            <input type="checkbox" id="login-remember" /> 记住我
           </label>
         </div>
-        <button class="btn primary mt-16" id="login-submit" style="width:100%">⚡ LOGIN</button>
+        <button class="btn primary mt-16" id="login-submit" style="width:100%">⚡ 登录</button>
         <div class="text-center mt-12">
-          <span class="text-muted font-sm">No account?</span>
-          <button class="btn ghost font-sm" id="login-switch-register">CREATE ACCOUNT</button>
+          <span class="text-muted font-sm">没有账号？</span>
+          <button class="btn ghost font-sm" id="login-switch-register">创建账号</button>
         </div>
       </div>
       <div id="register-form" class="hidden">
-        <label>USERNAME</label>
-        <input type="text" id="reg-username" placeholder="Choose a username" autocomplete="username" />
-        <label class="mt-12">NICKNAME</label>
-        <input type="text" id="reg-nickname" placeholder="Display name (optional)" />
-        <label class="mt-12">PASSWORD</label>
-        <input type="password" id="reg-password" placeholder="Min 6 characters" autocomplete="new-password" />
-        <button class="btn secondary mt-16" id="reg-submit" style="width:100%">⚡ REGISTER</button>
+        <label data-i18n="auth.username_placeholder">用户名</label>
+        <input type="text" id="reg-username" data-i18n-placeholder="auth.username_placeholder" placeholder="请输入用户名" autocomplete="username" />
+        <label class="mt-12" data-i18n="auth.email_placeholder">邮箱</label>
+        <input type="text" id="reg-nickname" data-i18n-placeholder="auth.email_placeholder" placeholder="显示名称（选填）" />
+        <label class="mt-12" data-i18n="auth.password_placeholder">密码</label>
+        <input type="password" id="reg-password" data-i18n-placeholder="auth.password_placeholder" placeholder="至少6位字符" autocomplete="new-password" />
+        <button class="btn secondary mt-16" id="reg-submit" style="width:100%">⚡ 注册</button>
         <div class="text-center mt-12">
-          <span class="text-muted font-sm">Already have an account?</span>
-          <button class="btn ghost font-sm" id="reg-switch-login">BACK TO LOGIN</button>
+          <span class="text-muted font-sm">已有账号？</span>
+          <button class="btn ghost font-sm" id="reg-switch-login">返回登录</button>
         </div>
       </div>
       <div class="text-center mt-12">

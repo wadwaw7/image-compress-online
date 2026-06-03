@@ -38,3 +38,15 @@ temp/
 *secret*
 *credential*
 *private*
+
+# Tauri
+app/src-tauri/target/
+
+# Capacitor (auto-generated)
+app/android/
+
+# Download binaries (large files)
+download/*.exe
+download/*.apk
+download/*.msi
+download/*.sha256

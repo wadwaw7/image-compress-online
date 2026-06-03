@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <script src="./theme-flash.js?v=20260603"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="index,follow" />
+  <title>下载桌面与移动应用 - 在线图片压缩工具</title>
+  <meta name="description" content="下载 ImageCompress 桌面版（Windows）和手机版（Android），无需浏览器即可离线使用图片压缩、去水印、证件照换底色等全部功能，安装包体积小、隐私安全。" />
+  <meta property="og:title" content="下载桌面与移动应用 - 在线图片压缩工具" />
+  <meta property="og:description" content="下载 ImageCompress 桌面版和手机版，离线使用图片压缩、去水印、证件照换底色功能，保护隐私安全。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.zaixianyasuo.cn/download.html" />
+  <link rel="canonical" href="https://www.zaixianyasuo.cn/download.html" />
+  <link rel="stylesheet" href="./shared.css?v=20260603" />
+  <style>
+    :root{--bg:#f6f7fb;--card:#ffffff;--text:#0f172a;--muted:#64748b;--brand:#695CFF;--border:#e7e9f2;--shadow:0 10px 26px rgba(17,23,41,.08)}
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Ubuntu,Arial,"Microsoft YaHei",sans-serif}
+    a{color:var(--muted);text-decoration:none;transition:color 0.18s}
+    a:hover{color:var(--brand)}
+    .container{max-width:980px;margin:0 auto;padding:24px}
+    .nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:12px 4px;border-bottom:1px solid var(--border)}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#9aa6ff 0%,#695CFF 100%);box-shadow:0 2px 10px rgba(105,92,255,.35)}
+    .brand b{font-weight:700}
+    .nav-links{display:flex;gap:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:20px}
+    h1{font-size:26px;margin:6px 0 8px;font-weight:800;letter-spacing:-0.3px}
+    h2{font-size:17px;margin:20px 0 10px}
+    h3{font-size:15px;margin:14px 0 6px}
+    .muted{color:var(--muted)}
+    .text-brand{color:var(--brand)}
+
+    /* Hero */
+    .hero-section{text-align:center;padding:40px 20px 32px}
+    .hero-section h1{font-size:30px;margin:0 0 10px;background:linear-gradient(135deg,#695CFF,#9aa6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-section .hero-sub{color:var(--muted);font-size:15px;max-width:560px;margin:0 auto 24px;line-height:1.7}
+
+    /* Platform cards */
+    .platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:0 0 28px}
+    .platform-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:28px 24px;text-align:center;transition:all 0.25s;position:relative;overflow:hidden}
+    .platform-card:hover{border-color:var(--brand);transform:translateY(-3px);box-shadow:0 12px 36px rgba(105,92,255,.12)}
+    .platform-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+    .platform-card.win::before{background:linear-gradient(90deg,#0078d4,#00bcf2)}
+    .platform-card.android::before{background:linear-gradient(90deg,#3ddc84,#00c853)}
+    .platform-icon{font-size:52px;margin:12px 0 6px;display:block}
+    .platform-name{font-size:20px;font-weight:700;margin:0 0 4px}
+    .platform-ver{display:inline-block;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:600;margin:6px 0 12px}
+    .platform-ver.win-ver{background:#e8f4fd;color:#0078d4}
+    .platform-ver.android-ver{background:#e6f9f0;color:#16a34a}
+    .platform-features{list-style:none;padding:0;margin:0 0 18px;text-align:left;display:inline-block}
+    .platform-features li{padding:5px 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+    .platform-features li .check{color:var(--brand);font-weight:700;flex-shrink:0}
+    .platform-size{font-size:12px;color:var(--muted);margin:0 0 14px}
+
+    /* Download buttons */
+    .btn{display:inline-block;cursor:pointer;border:1px solid transparent;border-radius:8px;padding:12px 28px;font-weight:700;font-size:15px;transition:all 0.18s;text-decoration:none;min-width:180px}
+    .btn-primary{background:var(--brand);color:#fff;box-shadow:0 4px 16px rgba(105,92,255,.3)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(105,92,255,.4);color:#fff}
+    .btn-outline{background:transparent;color:var(--brand);border:2px solid var(--brand);box-shadow:none}
+    .btn-outline:hover{background:rgba(105,92,255,.06);box-shadow:0 4px 12px rgba(105,92,255,.12);color:var(--brand)}
+    .btn-large{padding:14px 36px;font-size:16px;border-radius:10px}
+
+    /* Guide section */
+    .guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:0 0 28px}
+    .guide-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+    .guide-card h3{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:16px}
+    .guide-step{display:flex;gap:12px;align-items:flex-start;padding:8px 0}
+    .guide-step .step-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+    .guide-step .step-text{font-size:13px;color:var(--muted);line-height:1.6;padding-top:2px}
+
+    /* FAQ */
+    .faq-section{margin:0 0 28px}
+    .faq-section h2{text-align:center;font-size:20px;margin:0 0 18px;font-weight:700}
+    .faq-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;box-shadow:var(--shadow)}
+    .faq-item h3{font-size:14px;margin:0 0 6px;font-weight:600}
+    .faq-item p{color:var(--muted);font-size:13px;line-height:1.7;margin:0}
+
+    /* Version info banner */
+    .version-info{text-align:center;padding:10px 0;font-size:12px;color:var(--muted)}
+    .version-info code{background:var(--hover);padding:2px 8px;border-radius:4px;font-size:12px}
+
+    /* Coming soon badge */
+    .coming-soon{display:inline-block;padding:2px 8px;border-radius:999px;background:#fef3c7;color:#d97706;font-size:11px;font-weight:600;margin-left:6px}
+
+    /* Responsive */
+    @media (max-width:720px){
+      .platform-grid,.guide-grid{grid-template-columns:1fr}
+      .hero-section h1{font-size:24px}
+      .hero-section{padding:28px 12px 22px}
+    }
+    @media (max-width:640px){
+      .container{padding:16px 12px}
+      .platform-card{padding:22px 16px}
+      .btn-large{padding:12px 24px;font-size:14px;min-width:140px}
+    }
+    @media (max-width:380px){
+      .btn-large{width:100%}
+      .platform-features li{font-size:12px}
+    }
+
+    /* Dark mode */
+    :root[data-theme='dark']{--bg:#0b1120;--card:#1a2332;--text:#e2e8f0;--muted:#8899b4;--border:#283348;--shadow:0 10px 26px rgba(0,0,0,.3)}
+    html[data-theme='dark'] body{background:transparent;color:#e2e8f0}
+    html[data-theme='dark'] a{color:#8899b4}
+    html[data-theme='dark'] a:hover{color:#8b7bff}
+    html[data-theme='dark'] .card{background:#1a2332;border-color:#283348}
+    html[data-theme='dark'] .platform-card{background:#1a2332;border-color:#283348}
+    html[data-theme='dark'] .guide-card{background:#1a2332;border-color:#283348}
+    html[data-theme='dark'] .faq-item{background:#1a2332;border-color:#283348}
+    html[data-theme='dark'] .platform-ver.win-ver{background:#1a3350;color:#60a5fa}
+    html[data-theme='dark'] .platform-ver.android-ver{background:#1a3a2a;color:#4ade80}
+    html[data-theme='dark'] .version-info code{background:#243044}
+    html[data-theme='dark'] .coming-soon{background:#3a2e0a;color:#fbbf24}
+    @media (max-width:640px){
+      html[data-theme='dark'] .container{padding-top:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navigation -->
+    <div class="nav">
+      <div class="brand"><a href="./" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit"><div class="logo"></div><b>ImageCompress</b></a></div>
+      <div class="nav-links">
+        <a href="./">首页</a>
+        <a href="./download.html" style="font-weight:600;color:var(--brand)">下载App</a>
+        <a href="./changelog.html">更新日志</a>
+        <a href="./about.html">关于</a>
+        <a href="./privacy.html">隐私</a>
+        <a href="./feedback.html">反馈</a>
+        <a href="./bg-change.html">换底色</a>
+        <a href="./watermark-remover.html">去水印</a>
+        <a href="./donate.html">赞助</a>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <h1>下载桌面与移动应用</h1>
+      <p class="hero-sub">将强大的图片处理工具带到你的设备上。无需浏览器，离线也能使用压缩、去水印、证件照换底色全部功能。本地处理，隐私安全。</p>
+    </section>
+
+    <!-- Platform Cards -->
+    <div class="platform-grid">
+      <!-- Windows -->
+      <div class="platform-card win">
+        <span class="platform-icon">🪟</span>
+        <div class="platform-name">Windows 桌面版</div>
+        <div class="platform-ver win-ver" id="win-version">v1.0.0</div>
+        <ul class="platform-features">
+          <li><span class="check">✓</span> 无需浏览器，独立窗口运行</li>
+          <li><span class="check">✓</span> 可选择自定义安装位置</li>
+          <li><span class="check">✓</span> 桌面快捷方式 + 开始菜单</li>
+          <li><span class="check">✓</span> 文件系统直接访问，拖放即用</li>
+          <li><span class="check">✓</span> 支持 Windows 10 / 11</li>
+        </ul>
+        <p class="platform-size" id="win-size">安装包约 5 MB</p>
+        <a href="/download/imagecompress-setup.exe" class="btn btn-primary btn-large" id="btn-win-download" download>⬇ 下载 .exe 安装包</a>
+      </div>
+
+      <!-- Android -->
+      <div class="platform-card android">
+        <span class="platform-icon">📱</span>
+        <div class="platform-name">Android 手机版</div>
+        <div class="platform-ver android-ver" id="android-version">v1.0.0</div>
+        <ul class="platform-features">
+          <li><span class="check">✓</span> 触屏手势优化，拖拽框选</li>
+          <li><span class="check">✓</span> 分享到 App，从相册导入</li>
+          <li><span class="check">✓</span> 离线使用，无需网络</li>
+          <li><span class="check">✓</span> 自适应手机和平板屏幕</li>
+          <li><span class="check">✓</span> 支持 Android 8.0+</li>
+        </ul>
+        <p class="platform-size" id="android-size">安装包约 8 MB</p>
+        <a href="/download/imagecompress.apk" class="btn btn-primary btn-large" id="btn-android-download">⬇ 下载 APK 安装包</a>
+      </div>
+    </div>
+
+    <!-- Version info -->
+    <p class="version-info" id="version-info">
+      当前版本 <code id="ver-display">v1.0.0</code> · 发布于 <span id="ver-date">2026-06-03</span> ·
+      <a href="./changelog.html">查看更新日志 →</a>
+    </p>
+
+    <!-- Installation Guide -->
+    <section class="card" style="margin:0 0 28px">
+      <h2 style="margin:0 0 16px;text-align:center;font-size:20px">📖 安装指南</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3>🪟 Windows 安装步骤</h3>
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <span class="step-text"><b>下载安装包</b> — 点击上方"下载 .exe 安装包"按钮，将安装程序保存到本地。</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <span class="step-text"><b>运行安装程序</b> — 双击下载的 .exe 文件，在安装向导中选择你想要的安装目录，勾选"创建桌面快捷方式"。</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">3</span>
+            <span class="step-text"><b>开始使用</b> — 安装完成后桌面会出现 ImageCompress 图标，双击启动即可离线使用全部功能。</span>
+          </div>
+        </div>
+        <div class="guide-card">
+          <h3>📱 Android 安装步骤</h3>
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <span class="step-text"><b>下载 APK</b> — 点击上方"下载 APK 安装包"按钮，或在手机浏览器中打开本页面下载。</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <span class="step-text"><b>允许安装</b> — 下载完成后，系统会提示"允许来自此来源的安装"，点击"设置"→ 开启"允许安装未知应用"。</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">3</span>
+            <span class="step-text"><b>打开应用</b> — 安装完成后，在桌面或应用抽屉中找到 ImageCompress 图标，点击即可使用。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+      <h2>常见问题</h2>
+      <div class="faq-item">
+        <h3>桌面版和网页版功能一样吗？</h3>
+        <p>功能完全一致，都包含图片压缩、去水印、证件照换底色三大核心功能，且均为本地处理不经过服务器。桌面版额外优势：无需打开浏览器、文件系统直接交互、窗口始终置顶。</p>
+      </div>
+      <div class="faq-item">
+        <h3>安装包安全吗？会不会有病毒？</h3>
+        <p>安装包由我们官方构建和签名，不含任何恶意代码。所有图片处理在你自己的设备上完成，不会上传任何数据到服务器。如果你有顾虑，可以继续使用网页版，效果完全相同。</p>
+      </div>
+      <div class="faq-item">
+        <h3>Windows 安装时可以自己选安装位置吗？</h3>
+        <p>可以。安装向导中会显示安装目录选择页面，默认路径为 <code>C:\Program Files\ImageCompress</code>，你可以点击"浏览"选择其他目录。</p>
+      </div>
+      <div class="faq-item">
+        <h3>后续如何更新到新版本？</h3>
+        <p>应用内置了自动更新检测功能，有新版本时会弹出通知。你也可以随时访问本下载页面获取最新安装包，覆盖安装即可（不会丢失设置）。</p>
+      </div>
+      <div class="faq-item">
+        <h3>有 macOS 或 iOS 版本吗？</h3>
+        <p>macOS 和 iOS 版本目前正在开发中，敬请期待。<span class="coming-soon">即将推出</span>。同时你也可以直接使用 <a href="./" style="color:var(--brand)">网页版</a>，在 Safari 或 Chrome 中打开即可使用全部功能。</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="footer" style="margin:28px 0 8px;text-align:center;color:#9aa3b2;font-size:12px">
+      <nav style="margin-bottom:10px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px">
+        <a href="./" style="color:#9aa3b2;text-decoration:none">首页</a>
+        <a href="./download.html" style="color:var(--brand);text-decoration:none">下载App</a>
+        <a href="./bg-change.html" style="color:#9aa3b2;text-decoration:none">证件照换底色</a>
+        <a href="./watermark-remover.html" style="color:#9aa3b2;text-decoration:none">去水印</a>
+        <a href="./changelog.html" style="color:#9aa3b2;text-decoration:none">更新日志</a>
+        <a href="./feedback.html" style="color:#9aa3b2;text-decoration:none">反馈</a>
+        <a href="./donate.html" style="color:#9aa3b2;text-decoration:none">赞助</a>
+        <a href="./about.html" style="color:#9aa3b2;text-decoration:none">关于</a>
+        <a href="./privacy.html" style="color:#9aa3b2;text-decoration:none">隐私政策</a>
+      </nav>
+      © 2025 ImageCompress. 版权所有。 <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">赣ICP备2025079690号-1</a>
+    </div>
+  </div>
+
+  <script src="./theme-flash.js?v=20260603"></script>
+  <script src="./menu.js?v=20260603"></script>
+  <script src="./theme.js?v=20260603"></script>
+  <script src="./spark.js?v=20260603" defer></script>
+  <script src="./stars.js?v=20260603" defer></script>
+  <script>
+  /* 动态获取版本信息 */
+  (function(){
+    var verDisplay = document.getElementById('ver-display');
+    var verDate = document.getElementById('ver-date');
+    var winVer = document.getElementById('win-version');
+    var androidVer = document.getElementById('android-version');
+
+    fetch('/app/version.json?t=' + Date.now(), { cache: 'no-cache' })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(info){
+        if (!info || !info.version) return;
+        var v = 'v' + info.version;
+        if (verDisplay) verDisplay.textContent = v;
+        if (winVer) winVer.textContent = v;
+        if (androidVer) androidVer.textContent = v;
+        if (info.buildDate && verDate) verDate.textContent = info.buildDate;
+      })
+      .catch(function(){});
+
+    /* 下载按钮点击追踪 */
+    document.getElementById('btn-win-download') && document.getElementById('btn-win-download').addEventListener('click', function(){
+      console.log('Download: Windows EXE');
+    });
+    document.getElementById('btn-android-download') && document.getElementById('btn-android-download').addEventListener('click', function(){
+      console.log('Download: Android APK');
+    });
+  })();
+  </script>
+</body>
+</html>

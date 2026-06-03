@@ -3,11 +3,12 @@
    Works for PWA, APK, and EXE builds. */
 
 import { showToast } from './ui/toast.js';
-import { getToken } from './auth.js';
+import { t, getLang } from './i18n.js';
 
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.0.1';
 const CHECK_INTERVAL = 1000 * 60 * 60 * 6; // Check every 6 hours
-const VERSION_URL = '/app/version.json'; // Served by nginx from public/app/
+// Always use absolute URL — works for web, Tauri, and Capacitor
+const VERSION_URL = 'https://www.zaixianyasuo.cn/app/version.json';
 
 let updateModalShown = false;
 
@@ -37,21 +38,28 @@ function showUpdateModal(latest, updateInfo) {
 
   const platform = getPlatform();
   const downloadUrl = updateInfo.downloads?.[platform] || updateInfo.downloads?.pwa || '/app/';
+  const isNative = platform === 'exe' || platform === 'apk';
+  const primaryUrl = isNative ? '/download.html' : downloadUrl;
+  const lang = getLang();
 
   overlay.innerHTML = `
     <div class="card" style="width:420px;max-width:90vw;animation:scaleIn 0.3s var(--ease-out)">
       <div class="card-header">
-        <h3 style="color:var(--neon-magenta)">▸ UPDATE AVAILABLE</h3>
+        <h3 style="color:var(--neon-magenta)">▸ ${t('updater.title')}</h3>
         <button class="btn ghost" id="update-close" style="padding:4px 8px;font-size:16px">✕</button>
       </div>
       <div style="font-family:var(--font-mono);font-size:13px;line-height:1.8;color:var(--text-secondary)">
-        <p><span class="text-cyan">Current:</span> v${APP_VERSION}</p>
-        <p><span class="text-magenta">Latest:</span> v${latest}</p>
+        <p><span class="text-cyan">${t('updater.current_version')}:</span> v${APP_VERSION}</p>
+        <p><span class="text-magenta">${t('updater.latest_version')}:</span> v${latest}</p>
         <p class="mt-12" style="color:var(--text-dim);font-size:11px">${updateInfo.releaseNotes || ''}</p>
-        <div class="mt-16" style="display:flex;gap:10px">
-          <button class="btn primary" id="update-download" style="flex:1">⬇ DOWNLOAD UPDATE</button>
-          <button class="btn ghost" id="update-later">REMIND LATER</button>
+        <div class="mt-16" style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn primary" id="update-download" style="flex:1;min-width:140px">⬇ ${t('updater.download_btn')}</button>
+          ${isNative ? `<button class="btn ghost" id="update-direct" style="font-size:12px">${t('updater.direct_download')}</button>` : ''}
+          <button class="btn ghost" id="update-later">${t('updater.remind_later')}</button>
         </div>
+        <p style="margin-top:8px;font-size:11px;color:var(--text-dim)">
+          <a href="/changelog.html" target="_blank" style="color:var(--neon-cyan)">${t('updater.view_changelog')}</a>
+        </p>
       </div>
     </div>
   `;
@@ -66,12 +74,17 @@ function showUpdateModal(latest, updateInfo) {
   overlay.querySelector('#update-close').addEventListener('click', close);
   overlay.querySelector('#update-later').addEventListener('click', () => {
     close();
-    // Schedule next check in 1 day
     localStorage.setItem('update_last_check', String(Date.now() + 24 * 60 * 60 * 1000));
   });
   overlay.querySelector('#update-download').addEventListener('click', () => {
-    window.open(downloadUrl, '_blank');
+    window.open(primaryUrl, '_blank');
   });
+  const directBtn = overlay.querySelector('#update-direct');
+  if (directBtn) {
+    directBtn.addEventListener('click', () => {
+      window.open(downloadUrl, '_blank');
+    });
+  }
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) close();
   });
@@ -93,21 +106,21 @@ function getPlatform() {
  * @returns {Promise<{hasUpdate:boolean, latest:string, info:object}|null>}
  */
 export async function checkForUpdates(silent = true) {
-  // Check last check time
   const lastCheck = parseInt(localStorage.getItem('update_last_check') || '0');
   if (!silent && Date.now() - lastCheck < 60000) {
-    showToast('Checked recently. Please wait before checking again.', 'info');
+    showToast(t('updater.checked_recently'), 'info');
     return null;
   }
 
   try {
-    const resp = await fetch(VERSION_URL + '?t=' + Date.now(), {
+    const url = VERSION_URL + '?t=' + Date.now();
+    const resp = await fetch(url, {
       cache: 'no-cache',
       headers: { 'Accept': 'application/json' }
     });
 
     if (!resp.ok) {
-      if (!silent) showToast('Failed to check for updates. Server unreachable.', 'error');
+      if (!silent) showToast(t('updater.check_failed'), 'error');
       return null;
     }
 
@@ -119,22 +132,21 @@ export async function checkForUpdates(silent = true) {
     const cmp = compareVersions(APP_VERSION, info.version);
 
     if (cmp < 0) {
-      // Update available
       const minOk = !info.minAppVersion || compareVersions(APP_VERSION, info.minAppVersion) >= 0;
       if (!minOk) {
-        showToast(`Critical update required! v${info.version} is available.`, 'error');
+        showToast(`${t('updater.title')}! v${info.version} ${t('about.new_version')}.`, 'error');
       }
       showUpdateModal(info.version, info);
       return { hasUpdate: true, latest: info.version, info };
     }
 
     if (!silent) {
-      showToast('You are running the latest version (v' + APP_VERSION + ')', 'success');
+      showToast(t('updater.no_update') + ' (v' + APP_VERSION + ')', 'success');
     }
     return { hasUpdate: false, latest: APP_VERSION, info };
 
   } catch (e) {
-    if (!silent) showToast('Update check failed: ' + (e.message || 'Network error'), 'error');
+    if (!silent) showToast(t('updater.check_failed'), 'error');
     console.warn('Update check failed:', e);
     return null;
   }
@@ -144,13 +156,8 @@ export async function checkForUpdates(silent = true) {
  * Start periodic update checks
  */
 export function startUpdateChecks() {
-  // Check on startup (silently)
   setTimeout(() => checkForUpdates(true), 5000);
-
-  // Check periodically
   setInterval(() => checkForUpdates(true), CHECK_INTERVAL);
-
-  // Also check when coming back online
   window.addEventListener('online', () => {
     setTimeout(() => checkForUpdates(true), 2000);
   });

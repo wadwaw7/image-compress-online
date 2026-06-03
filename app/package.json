@@ -6,9 +6,19 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "build:windows": "vite build && tauri build",
+    "cap:init": "npx cap init ImageCompress cn.zaixianyasuo.imagecompress --web-dir=dist",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android",
+    "icons": "node gen-icons.js"
   },
   "devDependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@tauri-apps/cli": "^2.0.0",
     "sharp": "^0.34.5",
     "vite": "^5.4.0"
   }

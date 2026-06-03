@@ -56,7 +56,6 @@
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  user-select: none;
 }
 .btn::after {
   content: '';

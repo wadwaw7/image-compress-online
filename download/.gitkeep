@@ -1,0 +1,2 @@
+二进制安装包 (.exe, .apk) 由构建脚本生成到此目录。
+运行 app/scripts/build-all.ps1 构建全部平台安装包。
