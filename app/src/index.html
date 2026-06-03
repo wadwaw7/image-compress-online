@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#06060f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>ImageCompress - Cyberpunk Edition</title>
+  <link rel="stylesheet" href="./css/base.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+  <link rel="stylesheet" href="./css/animations.css" />
+  <link rel="stylesheet" href="./css/responsive.css" />
+  <link rel="manifest" href="./manifest.json" />
+  <style>
+    /* Inline critical styles to prevent FOUC */
+    body { background: #06060f; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== App Shell ===== -->
+  <div id="app">
+
+    <!-- Sidebar (Desktop) -->
+    <aside id="app-sidebar">
+      <div class="logo-area">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text glitch-text" data-text="IMAGECOMPRESS">IMAGECOMPRESS</div>
+        <div class="logo-sub mt-8">CYBERPUNK EDITION</div>
+      </div>
+
+      <nav class="sidebar-nav" role="tablist" aria-label="Main navigation">
+        <button class="sidebar-tab active" data-tab="compress" role="tab" aria-selected="true">
+          <span class="tab-icon">🗜️</span> COMPRESS
+        </button>
+        <button class="sidebar-tab" data-tab="watermark" role="tab" aria-selected="false">
+          <span class="tab-icon">💧</span> DE-WATERMARK
+        </button>
+        <button class="sidebar-tab" data-tab="background" role="tab" aria-selected="false">
+          <span class="tab-icon">🎨</span> BG CHANGE
+        </button>
+        <button class="sidebar-tab" data-tab="about" role="tab" aria-selected="false">
+          <span class="tab-icon">⊡</span> ABOUT
+        </button>
+      </nav>
+
+      <div style="padding:12px 14px;border-top:1px solid var(--border-subtle)">
+        <button class="btn primary" id="sidebar-login-btn" style="width:100%;font-size:10px;padding:8px">⚡ LOGIN / REGISTER</button>
+        <div id="sidebar-user-info" class="hidden" style="text-align:center">
+          <div class="text-mono font-sm text-cyan" id="sidebar-user-name"></div>
+          <button class="btn ghost font-sm mt-8" id="sidebar-logout-btn" style="font-size:9px;width:100%">LOGOUT</button>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        v1.0.0 · OFFLINE READY
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="app-content">
+
+      <!-- ====== COMPRESS PAGE ====== -->
+      <section class="page active" data-tab="compress" aria-label="Image Compress">
+        <div class="card mb-12">
+          <div class="card-header">
+            <h2>▸ IMAGE COMPRESSION</h2>
+            <span class="badge cyan">LOCAL MODE</span>
+          </div>
+
+          <!-- Drop Zone -->
+          <div class="dropzone border-pulse" id="compress-dropzone">
+            <span class="dz-icon">📁</span>
+            <div class="dz-title">DROP IMAGES HERE</div>
+            <div class="dz-hint">or click to browse · PNG / JPG / WebP · batch supported</div>
+          </div>
+          <input type="file" id="compress-input" class="sr-only" accept="image/png,image/jpeg,image/webp" multiple />
+
+          <!-- File Queue -->
+          <div id="compress-queue-wrap" class="hidden mt-16">
+            <div class="flex-between mb-8">
+              <span class="text-mono font-sm text-cyan" id="queue-count">0 files</span>
+              <button class="btn ghost font-sm" id="btn-clear-queue">CLEAR ALL</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>FILE</th>
+                    <th>ORIGINAL</th>
+                    <th>RESULT</th>
+                    <th>SAVED</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="queue-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Progress -->
+          <div id="compress-progress-wrap" class="hidden mt-16">
+            <div class="flex-between mb-8">
+              <span class="text-mono font-sm text-magenta" id="progress-text">Processing...</span>
+              <span class="text-mono font-sm text-dim" id="progress-file"></span>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="card">
+          <div class="card-header">
+            <h3>▸ SETTINGS</h3>
+          </div>
+          <div class="flex-row" style="gap:16px">
+            <div style="flex:1;min-width:140px">
+              <label>FORMAT</label>
+              <select id="compress-format">
+                <option value="webp" selected>WebP (recommended)</option>
+                <option value="jpeg">JPEG</option>
+                <option value="png">PNG</option>
+              </select>
+            </div>
+            <div style="flex:1;min-width:140px">
+              <label>QUALITY: <span id="quality-val" class="text-cyan">80</span>%</label>
+              <input type="range" id="compress-quality" min="1" max="100" value="80" />
+            </div>
+          </div>
+          <div class="flex-row mt-12" style="gap:16px">
+            <div style="flex:1;min-width:120px">
+              <label>MAX WIDTH (px, 0=off)</label>
+              <input type="number" id="compress-maxw" value="0" min="0" max="10000" />
+            </div>
+            <div style="flex:1;min-width:120px">
+              <label>MAX HEIGHT (px, 0=off)</label>
+              <input type="number" id="compress-maxh" value="0" min="0" max="10000" />
+            </div>
+            <div style="flex:1;min-width:120px">
+              <label>CONCURRENCY</label>
+              <select id="compress-concurrency">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex-row mt-16">
+            <button class="btn primary neon-pulse" id="btn-compress-start" disabled>⚡ START COMPRESSION</button>
+            <button class="btn success" id="btn-download-all" disabled>⬇ DOWNLOAD ALL</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== WATERMARK PAGE ====== -->
+      <section class="page" data-tab="watermark" aria-label="Remove Watermark">
+        <div class="card mb-12">
+          <div class="card-header">
+            <h2>▸ WATERMARK REMOVAL</h2>
+            <span class="badge magenta">LOCAL INPAINT</span>
+          </div>
+
+          <div class="flex-row mb-12" style="gap:10px">
+            <button class="btn primary" id="wm-btn-browse">📂 SELECT IMAGE</button>
+            <button class="btn secondary" id="wm-btn-apply" disabled>🔧 INPAINT</button>
+            <button class="btn success" id="wm-btn-download" disabled>⬇ DOWNLOAD</button>
+            <button class="btn ghost" id="wm-btn-clear" disabled>CLEAR</button>
+            <button class="btn danger" id="wm-btn-clearsel" disabled>CLEAR SEL</button>
+          </div>
+          <input type="file" id="wm-file-input" class="sr-only" accept="image/png,image/jpeg,image/webp" />
+
+          <div class="flex-row mt-12" style="gap:16px">
+            <div style="flex:1;min-width:200px">
+              <label>ITERATIONS: <span id="wm-iter-val" class="text-magenta">35</span></label>
+              <input type="range" id="wm-iterations" min="10" max="80" value="35" />
+            </div>
+          </div>
+
+          <div class="text-muted font-sm mt-8" id="wm-msg">
+            <span class="text-cyan">▸</span> Select an image, then drag on the original to mark the watermark area.
+          </div>
+        </div>
+
+        <div class="split-view">
+          <div class="canvas-preview" id="wm-src-wrap">
+            <div class="canvas-label">ORIGINAL</div>
+            <canvas id="wm-cv-src"></canvas>
+            <div id="wm-overlay" style="position:absolute;inset:0;pointer-events:none"></div>
+          </div>
+          <div class="canvas-preview" id="wm-out-wrap">
+            <div class="canvas-label">RESULT</div>
+            <canvas id="wm-cv-out"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== BACKGROUND PAGE ====== -->
+      <section class="page" data-tab="background" aria-label="Background Change">
+        <div class="card mb-12">
+          <div class="card-header">
+            <h2>▸ BACKGROUND CHANGE</h2>
+            <span class="badge green">LOCAL PROCESSING</span>
+          </div>
+
+          <div class="flex-row mb-12" style="gap:10px">
+            <button class="btn primary" id="bg-btn-browse">📂 SELECT IMAGE</button>
+            <button class="btn secondary" id="bg-btn-process" disabled>🎨 CHANGE BG</button>
+            <button class="btn success" id="bg-btn-download" disabled>⬇ DOWNLOAD</button>
+            <button class="btn ghost" id="bg-btn-clear">CLEAR</button>
+          </div>
+          <input type="file" id="bg-file-input" class="sr-only" accept="image/png,image/jpeg,image/webp" />
+
+          <!-- Background Color -->
+          <div class="mt-16">
+            <label>BACKGROUND COLOR</label>
+            <div class="color-pills mb-8" id="bg-color-pills">
+              <div class="color-pill active" data-color="#ffffff" style="background:#fff" title="White"></div>
+              <div class="color-pill" data-color="#ff0000" style="background:#ff0000" title="Red"></div>
+              <div class="color-pill" data-color="#0000ff" style="background:#0066ff" title="Blue"></div>
+              <div class="color-pill" data-color="#00ff00" style="background:#33cc33" title="Green"></div>
+            </div>
+            <div class="flex-row" style="gap:10px">
+              <input type="text" id="bg-custom-color" value="#ffffff" placeholder="#RRGGBB or rgb(r,g,b)" style="flex:1" />
+              <button class="btn ghost" id="bg-btn-pick" title="Pick color from image">💉 EYEDROPPER</button>
+            </div>
+          </div>
+
+          <!-- Sliders -->
+          <div class="flex-row mt-16" style="gap:16px">
+            <div style="flex:1;min-width:140px">
+              <label>TOLERANCE: <span id="bg-tol-val" class="text-cyan">10</span></label>
+              <input type="range" id="bg-tolerance" min="0" max="100" value="10" />
+            </div>
+            <div style="flex:1;min-width:140px">
+              <label>FEATHER: <span id="bg-feather-val" class="text-cyan">2</span></label>
+              <input type="range" id="bg-feather" min="0" max="20" value="2" />
+            </div>
+            <div style="flex:1;min-width:140px">
+              <label>SHRINK: <span id="bg-shrink-val" class="text-cyan">0</span></label>
+              <input type="range" id="bg-shrink" min="0" max="6" value="0" />
+            </div>
+          </div>
+
+          <!-- Size & format -->
+          <div class="flex-row mt-12" style="gap:16px">
+            <div style="flex:1;min-width:140px">
+              <label>SIZE</label>
+              <select id="bg-size">
+                <option value="orig" selected>Original</option>
+                <option value="1inch">1-inch (295×413)</option>
+                <option value="2inch">2-inch (413×579)</option>
+              </select>
+            </div>
+            <div style="flex:1;min-width:140px">
+              <label>FORMAT</label>
+              <select id="bg-format">
+                <option value="image/jpeg" selected>JPEG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WebP</option>
+              </select>
+            </div>
+            <div style="flex:1;min-width:140px">
+              <label>QUALITY: <span id="bg-q-val" class="text-cyan">90</span>%</label>
+              <input type="range" id="bg-quality" min="60" max="95" value="90" />
+            </div>
+          </div>
+
+          <div class="text-muted font-sm mt-8" id="bg-msg">
+            <span class="text-cyan">▸</span> Click the eyedropper then click on the original image's background to sample the color to replace.
+          </div>
+        </div>
+
+        <div class="split-view">
+          <div class="canvas-preview" id="bg-src-wrap">
+            <div class="canvas-label">ORIGINAL</div>
+            <canvas id="bg-cv-src"></canvas>
+          </div>
+          <div class="canvas-preview" id="bg-out-wrap">
+            <div class="canvas-label">RESULT</div>
+            <canvas id="bg-cv-out"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== ABOUT PAGE ====== -->
+      <section class="page" data-tab="about" aria-label="About">
+        <div class="card">
+          <div class="card-header">
+            <h2>▸ ABOUT</h2>
+            <span class="badge cyan">v1.0.0</span>
+          </div>
+
+          <div style="font-family:var(--font-mono);font-size:13px;line-height:2;color:var(--text-secondary)">
+            <p><span class="text-cyan">ImageCompress Cyberpunk Edition</span></p>
+            <p>Version: <span class="text-magenta" id="about-version">v1.0.0</span></p>
+            <p class="mt-12">A standalone offline image processing tool with cyberpunk aesthetics.</p>
+            <button class="btn secondary mt-12" id="about-check-update">🔄 CHECK FOR UPDATES</button>
+            <p class="text-dim font-sm mt-8" id="about-update-status"></p>
+
+            <p class="mt-16" style="color:var(--neon-cyan)">▸ FEATURES</p>
+            <ul style="list-style:none;padding:0;margin:8px 0">
+              <li><span class="text-magenta">⬡</span> Image Compression — Batch compress with format/quality/resize control</li>
+              <li><span class="text-magenta">⬡</span> Watermark Removal — AI diffusion-based inpainting, fully local</li>
+              <li><span class="text-magenta">⬡</span> Background Change — ID photo background swap with edge feathering</li>
+              <li><span class="text-magenta">⬡</span> 100% Local Processing — No upload, no server, no login required</li>
+              <li><span class="text-magenta">⬡</span> Offline Ready — Works without internet after first load</li>
+            </ul>
+
+            <p class="mt-16" style="color:var(--neon-cyan)">▸ PRIVACY</p>
+            <p>All image processing happens locally in your browser using Canvas API. Your files never leave your device.</p>
+
+            <p class="mt-16" style="color:var(--neon-cyan)">▸ ONLINE VERSION</p>
+            <p>For video compression and advanced features, visit <a href="https://www.zaixianyasuo.cn" target="_blank" rel="noopener">zaixianyasuo.cn</a></p>
+
+            <p class="mt-16" style="color:var(--neon-cyan)">▸ KEYBOARD SHORTCUTS</p>
+            <p><span class="badge cyan">Ctrl+1</span> Compress &nbsp; <span class="badge magenta">Ctrl+2</span> De-Watermark &nbsp; <span class="badge green">Ctrl+3</span> BG Change &nbsp; <span class="badge cyan">Ctrl+4</span> About</p>
+
+            <p class="mt-20 text-center text-muted" style="font-size:10px;letter-spacing:1px">
+              © 2026 ImageCompress. Built with ⚡ cyberpunk energy.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Bottom Tab Bar (Mobile) -->
+  <nav id="bottom-tabs" role="tablist" aria-label="Mobile navigation">
+    <button class="bottom-tab active" data-tab="compress">
+      <span class="bt-icon">🗜️</span> COMPRESS
+    </button>
+    <button class="bottom-tab" data-tab="watermark">
+      <span class="bt-icon">💧</span> WATERMARK
+    </button>
+    <button class="bottom-tab" data-tab="background">
+      <span class="bt-icon">🎨</span> BG CHANGE
+    </button>
+    <button class="bottom-tab" data-tab="about">
+      <span class="bt-icon">⊡</span> ABOUT
+    </button>
+  </nav>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- App Entry -->
+  <script type="module" src="./js/app.js"></script>
+
+  <!-- Login Modal -->
+  <div id="login-modal" class="hidden" style="position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px)">
+    <div class="card" style="width:380px;max-width:90vw;animation:scaleIn 0.25s var(--ease-out)">
+      <div class="card-header">
+        <h3 id="login-modal-title">▸ LOGIN</h3>
+        <button class="btn ghost" id="login-modal-close" style="padding:4px 8px;font-size:16px">✕</button>
+      </div>
+      <div id="login-error" class="hidden mb-12" style="padding:8px 12px;border:1px solid var(--neon-red);border-radius:var(--radius-sm);color:var(--neon-red);font-size:12px;background:rgba(255,34,68,0.08)"></div>
+      <div id="login-form">
+        <label>USERNAME OR EMAIL</label>
+        <input type="text" id="login-username" placeholder="Enter username or email" autocomplete="username" />
+        <label class="mt-12">PASSWORD</label>
+        <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password" />
+        <div class="flex-between mt-12">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:0">
+            <input type="checkbox" id="login-remember" /> REMEMBER ME
+          </label>
+        </div>
+        <button class="btn primary mt-16" id="login-submit" style="width:100%">⚡ LOGIN</button>
+        <div class="text-center mt-12">
+          <span class="text-muted font-sm">No account?</span>
+          <button class="btn ghost font-sm" id="login-switch-register">CREATE ACCOUNT</button>
+        </div>
+      </div>
+      <div id="register-form" class="hidden">
+        <label>USERNAME</label>
+        <input type="text" id="reg-username" placeholder="Choose a username" autocomplete="username" />
+        <label class="mt-12">NICKNAME</label>
+        <input type="text" id="reg-nickname" placeholder="Display name (optional)" />
+        <label class="mt-12">PASSWORD</label>
+        <input type="password" id="reg-password" placeholder="Min 6 characters" autocomplete="new-password" />
+        <button class="btn secondary mt-16" id="reg-submit" style="width:100%">⚡ REGISTER</button>
+        <div class="text-center mt-12">
+          <span class="text-muted font-sm">Already have an account?</span>
+          <button class="btn ghost font-sm" id="reg-switch-login">BACK TO LOGIN</button>
+        </div>
+      </div>
+      <div class="text-center mt-12">
+        <span class="text-dim font-sm" style="font-size:10px">Accounts shared with zaixianyasuo.cn</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+/* ===== Cyberpunk Base Styles ===== */
+@import './tokens.css';
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+/* ===== Cyberpunk Grid Background ===== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridShift 8s linear infinite;
+}
+
+@keyframes gridShift {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 50px 50px, 50px 50px; }
+}
+
+/* ===== Scanline Overlay ===== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.4;
+}
+
+/* Reduce scanlines on mobile for performance */
+@media (max-width: 768px) {
+  body::after { opacity: 0.2; }
+  body::before { background-size: 80px 80px; }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border-glow); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
+
+/* ===== Selection ===== */
+::selection { background: rgba(0, 240, 255, 0.25); color: #fff; }
+
+/* ===== Focus ===== */
+:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+/* ===== Links ===== */
+a {
+  color: var(--neon-cyan);
+  text-decoration: none;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+a:hover {
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* ===== App Layout Shell ===== */
+#app {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Sidebar (desktop) */
+#app-sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100%;
+  background: var(--bg-deep);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#app-sidebar .logo-area {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+#app-sidebar .logo-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 10px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), 0 0 40px rgba(255, 0, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+#app-sidebar .logo-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+#app-sidebar .logo-sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+/* Content area */
+#app-content {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Page sections */
+.page {
+  display: none;
+  padding: 28px 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  animation: pageIn var(--dur-normal) var(--ease-out);
+}
+.page.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Bottom tab bar (mobile) */
+#bottom-tabs {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  #app-sidebar { display: none; }
+  #bottom-tabs { display: flex; }
+  #app-content { padding-bottom: 70px; }
+  .page { padding: 20px 14px; }
+}
+
+@media (min-width: 769px) {
+  #bottom-tabs { display: none !important; }
+}

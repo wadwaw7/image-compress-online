@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "buildDate": "2026-06-03",
+  "releaseNotes": "初始赛博朋克版本发布 — 图片压缩、去水印、证件照换底色，100% 本地处理",
+  "downloads": {
+    "apk": "/download/imagecompress.apk",
+    "exe": "/download/imagecompress.exe",
+    "pwa": "/app/"
+  },
+  "minAppVersion": "1.0.0"
+}

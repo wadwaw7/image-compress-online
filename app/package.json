@@ -1,0 +1,15 @@
+{
+  "name": "imagecompress-cyberpunk",
+  "version": "1.0.0",
+  "description": "ImageCompress Cyberpunk Edition - 赛博朋克风格图片处理工具",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5",
+    "vite": "^5.4.0"
+  }
+}
