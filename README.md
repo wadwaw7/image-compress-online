@@ -1,5 +1,9 @@
 # ImageCompress — 在线图片压缩工具
 
+> ⚠️ **此仓库已迁移**  
+> 新的开源仓库地址：**[github.com/wadwaw7/image-compressor](https://github.com/wadwaw7/image-compressor)**  
+> 包含完整的 FastAPI 后端 + Docker 部署 + CI/CD + API 文档，请前往新仓库 ⭐
+
 [![Website](https://img.shields.io/badge/官网-www.zaixianyasuo.cn-blue)](https://www.zaixianyasuo.cn)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Web-brightgreen)](https://www.zaixianyasuo.cn)
