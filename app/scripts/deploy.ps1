@@ -4,7 +4,7 @@
 # 用法: .\scripts\deploy.ps1 [-Server <ip>] [-SkipBuild]
 # ============================================================
 param(
-    [string]$Server = "123.56.235.54",
+    [string]$Server = "your-server-ip",
     [string]$User = "root",
     [switch]$SkipBuild
 )
@@ -53,17 +53,17 @@ Write-Host "  ✓ App 前端上传完成" -ForegroundColor Green
 
 # Upload public pages (download.html, updated nav pages)
 Write-Host "  上传网页文件..." -ForegroundColor Gray
-scp (Join-Path $PublicDir "download.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "index.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "about.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "changelog.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "changelog.json") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "feedback.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "privacy.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "donate.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "bg-change.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "watermark-remover.html") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
-scp (Join-Path $PublicDir "menu.js") "$User@$Server`:/var/www/zaixianyasuo.cn/public/"
+scp (Join-Path $PublicDir "download.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "index.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "about.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "changelog.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "changelog.json") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "feedback.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "privacy.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "donate.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "bg-change.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "watermark-remover.html") "$User@$Server`:/var/www/your-domain.com/public/"
+scp (Join-Path $PublicDir "menu.js") "$User@$Server`:/var/www/your-domain.com/public/"
 Write-Host "  ✓ 网页文件上传完成" -ForegroundColor Green
 
 # Step 3: Reload nginx
@@ -79,8 +79,8 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "  部署完成! 请验证以下 URL:" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  下载页面: https://www.zaixianyasuo.cn/download.html" -ForegroundColor White
-Write-Host "  首页:     https://www.zaixianyasuo.cn/" -ForegroundColor White
-Write-Host "  App:      https://www.zaixianyasuo.cn/app/" -ForegroundColor White
-Write-Host "  Windows:  https://www.zaixianyasuo.cn/download/imagecompress-setup.exe" -ForegroundColor White
-Write-Host "  Android:  https://www.zaixianyasuo.cn/download/imagecompress.apk" -ForegroundColor White
+Write-Host "  下载页面: https://www.your-domain.com/download.html" -ForegroundColor White
+Write-Host "  首页:     https://www.your-domain.com/" -ForegroundColor White
+Write-Host "  App:      https://www.your-domain.com/app/" -ForegroundColor White
+Write-Host "  Windows:  https://www.your-domain.com/download/imagecompress-setup.exe" -ForegroundColor White
+Write-Host "  Android:  https://www.your-domain.com/download/imagecompress.apk" -ForegroundColor White
